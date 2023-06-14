@@ -38,30 +38,30 @@ number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_ea
 - `time_to_die` (in milliseconds): If a philosopher doesn't start eating within `time_to_die` milliseconds since their last meal or the start of the simulation, they die.
 - `time_to_eat` (in milliseconds): The time it takes for a philosopher to eat.
 - `time_to_sleep` (in milliseconds): The time a philosopher spends sleeping.
-- `number_of_times_each_philosopher_must_eat` (optional): If all philosophers have eaten at least `number_of_times_each_philosopher_must_eat` times, the simulation stops. If not specified, the simulation stops when a philosopher dies.
+- `number_of_times_each_philosopher_must_eat` (optional): If all philosophers have eaten at least x times, the simulation stops. If not specified, the simulation stops when a philosopher dies.
 
 ## External Functions
 
 You are authorized to use the following external functions:
 
-- [`memset`](https://www.man7.org/linux/man-pages/man3/memset.3.html)
-- [`printf`](https://www.man7.org/linux/man-pages/man3/printf.3.html)
-- [`malloc`](https://www.man7.org/linux/man-pages/man3/malloc.3.html)
-- [`free`](https://www.man7.org/linux/man-pages/man3/free.3.html)
-- [`write`](https://www.man7.org/linux/man-pages/man2/write.2.html)
-- [`usleep`](https://www.man7.org/linux/man-pages/man3/usleep.3.html)
-- [`gettimeofday`](https://www.man7.org/linux/man-pages/man2/gettimeofday.2.html)
-- [`pthread_create`](https://www.man7.org/linux/man-pages/man3/pthread_create.3.html)
-- [`pthread_detach`](https://www.man7.org/linux/man-pages/man3/pthread_detach.3.html)
-- [`pthread_join`](https://www.man7.org/linux/man-pages/man3/pthread_join.3.html)
-- [`pthread_mutex_init`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_init.3.html)
-- [`pthread_mutex_destroy`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_destroy.3.html)
-- [`pthread_mutex_lock`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_lock.3.html)
-- [`pthread_mutex_unlock`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_unlock.3.html)
+- [`memset`](https://www.man7.org/linux/man-pages/man3/memset.3.html): Sets a block of memory to a specified value.
+- [`printf`](https://www.man7.org/linux/man-pages/man3/printf.3.html): Prints formatted output to the standard output.
+- [`malloc`](https://www.man7.org/linux/man-pages/man3/malloc.3.html): Allocates a specified amount of memory from the heap.
+- [`free`](https://www.man7.org/linux/man-pages/man3/free.3.html): Deallocates a previously allocated memory block.
+- [`write`](https://www.man7.org/linux/man-pages/man2/write.2.html): Writes data from a buffer to a file descriptor or file stream.
+- [`usleep`](https://www.man7.org/linux/man-pages/man3/usleep.3.html): Suspends the execution of the current thread for a specified number of microseconds.
+- [`gettimeofday`](https://www.man7.org/linux/man-pages/man2/gettimeofday.2.html): Retrieves the current time.
+- [`pthread_create`](https://www.man7.org/linux/man-pages/man3/pthread_create.3.html): Creates a new thread of execution within a program.
+- [`pthread_detach`](https://www.man7.org/linux/man-pages/man3/pthread_detach.3.html): Detaches a thread, allowing it to run independently.
+- [`pthread_join`](https://www.man7.org/linux/man-pages/man3/pthread_join.3.html): Waits for a specified thread to terminate and collects its exit status.
+- [`pthread_mutex_init`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_init.3.html): Initializes a mutex (mutual exclusion) object for synchronization between threads.
+- [`pthread_mutex_destroy`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_destroy.3.html): Destroys a mutex object, releasing any associated resources.
+- [`pthread_mutex_lock`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_lock.3.html): Locks a mutex, acquiring exclusive access to a critical section of code.
+- [`pthread_mutex_unlock`](https://www.man7.org/linux/man-pages/man3/pthread_mutex_unlock.3.html): Unlocks a previously locked mutex, releasing the exclusive access to a critical section of code.
 
-## Libft
+## No Libft
 
-You are not authorized to use the `libft` library for this assignment.
+You are **not** authorized to use the `libft` library for this assignment.
 
 ## Overview
 

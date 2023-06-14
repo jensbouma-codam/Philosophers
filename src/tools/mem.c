@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   philo.c                                            :+:    :+:            */
+/*   mem.c                                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 21:12:35 by jbouma        ########   odam.nl         */
+/*   Created: 2023/06/12 17:01:34 by jbouma        #+#    #+#                 */
+/*   Updated: 2023/06/14 19:26:55 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char **argv)
+void	*mem_add(size_t count, size_t size)
 {
-	struct s_arg	a;
-	struct s_table	*table;
+	char	*ptr;
+	int		n;
 
-	a = input(argc, argv);
-	table = table_cutlery(a.philosophers);
-	table_join(table, a);
-	return (simulation(table, a));
+	n = size * count;
+	ptr = malloc(n + 1);
+	if (!ptr)
+		error_exit("Insane in the membrane! Insane in the brain!");
+	while (n >= 0)
+		ptr[n--] = '\0';
+	return ((void *) ptr);
 }

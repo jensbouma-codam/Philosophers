@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/06/12 18:10:00 by jbouma        ########   odam.nl          #
+#    Updated: 2023/06/14 20:28:17 by jbouma        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,9 +27,13 @@ INC 		= -I include
 
 # Sources
 SRCDIR		= 	src
-FILES		= 	philo.c			\
-				tools/c.c		\
-				tools/m.c	\
+FILES		= 	input.c			\
+				philo.c			\
+				simulation.c	\
+				table.c			\
+				tools/error.c	\
+				tools/debug.c	\
+				tools/mem.c		\
 	
 SOURCES		=	${addprefix $(SRCDIR)/, $(FILES)}
 
