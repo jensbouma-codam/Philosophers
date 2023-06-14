@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/12 17:51:59 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/06/12 17:01:27 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/06/14 18:30:34 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	c_error(char *msg)
 	exit (EXIT_FAILURE);
 }
 
-void	c_print(const char *s, ...)
+void	c_log(const char *s, ...)
 {
 	va_list	list;
 
