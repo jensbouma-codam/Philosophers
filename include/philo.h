@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 21:59:54 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/06/14 22:00:47 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ struct s_arg
 	uint32_t	time_to_die;
 	uint32_t	time_to_eat;
 	uint32_t	time_to_sleep;
+	uint32_t	must_eat;
 };
 
 struct s_fork
