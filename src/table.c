@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 21:54:29 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/06/14 22:11:40 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,20 @@ struct s_table	*table_cutlery(int i)
 	return (table);
 }
 
-void	table_join(struct s_table *table, struct s_arg a)
+void	table_join(struct s_table *t, struct s_arg a)
 {
 	int				i;
-	struct s_philo	*p;
-	struct timeval	t;
+	struct timeval	time;
 
 	i = a.philosophers;
 	while (i > 0)
 	{
-		p = mem_add(1, sizeof(struct s_philo));
-		p->id = i;
-		gettimeofday(&t, NULL);
-		p->time_to_eat = t.tv_sec * 1000000 + t.tv_usec + a.time_to_eat;
-		p->time_to_die = t.tv_sec * 1000000 + t.tv_usec + a.time_to_die;
-		p->time_to_sleep = t.tv_sec * 1000000 + t.tv_usec + a.time_to_sleep;
-		p->state = THINKING;
-		table->philosopher = p;
-		table = table->next;
+		t->id = i;
+		gettimeofday(&time, NULL);
+		t->time_to_die = time.tv_sec * 1000000 + time.tv_usec + a.time_to_die;
+		t->state = THINKING;
+		t->times_eaten = 0;
+		t = t->next;
 		i--;
 	}
 }

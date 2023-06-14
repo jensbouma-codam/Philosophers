@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 19:48:47 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 21:58:54 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/06/14 22:19:03 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 bool	simulation(struct s_table *table, struct s_arg a)
 {
 	struct timeval	time;
-	int dead;
-	int alive;
+	int				dead;
+	int				alive;
 
 	dead = 0;
 	alive = 0;
@@ -30,13 +30,13 @@ bool	simulation(struct s_table *table, struct s_arg a)
 
 	while (table)
 	{
-		// printf("left fork: %p\n", table->l_fork);
-		// printf("seat: %d\n", table->philosopher->id);
-		// printf("state: %d\n", table->philosopher->state);
-		// printf("time_to_die: %lu\n", table->philosopher->time_to_die);
-		// printf("right fork: %p\n", table->r_fork);
+		printf("left fork: %p\n", table->l_fork);
+		printf("seat: %d\n", table->id);
+		printf("state: %d\n", table->state);
+		printf("time_to_die: %lu\n", table->time_to_die);
+		printf("right fork: %p\n", table->r_fork);
 		gettimeofday(&time, NULL);
-		if (table->philosopher->time_to_die < time.tv_sec * 1000000 + time.tv_usec)
+		if (table->time_to_die < time.tv_sec * 1000000 + time.tv_usec)
 			dead++;
 		else
 			alive++;

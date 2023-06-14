@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 22:00:47 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/06/14 22:12:03 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,20 @@ enum e_state
 
 struct s_philo
 {
-	int		id;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	int		state;
+
 };
 
 struct s_table
 {
+	int				id;
 	struct s_fork	*l_fork;
 	struct s_fork	*r_fork;
 	struct s_philo	*philosopher;
 	struct s_table	*next;
 	struct s_table	*prev;
+	long			time_to_die;
+	uint32_t		times_eaten;
+	int				state;
 };
 
 struct s_arg	input(int argc, char **argv);
