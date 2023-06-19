@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 19:48:47 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 00:35:13 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 01:10:00 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ bool	watch_them_die(struct s_table *table)
 	everybody_is_full = true;
 	while (t)
 	{
-		is_everybody_full(table, &everybody_is_full);
+		if (everybody_is_full)
+			is_everybody_full(table, &everybody_is_full);
 		print_state(t, timestamp());
 		t = t->next;
 		if (t == NULL)

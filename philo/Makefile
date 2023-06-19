@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/06/20 00:32:33 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/06/20 01:03:48 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ TARGET		= $<
 CC 			:= cc
 CFLAGS		+= -Werror -Wall -Wextra
 # CFLAGS		+= -g
-CFLAGS		+= -O3 -flto -march=native -mtune=native
+# CFLAGS		+= -O3 -flto -march=native -mtune=native
 
 # Headers
 INC 		= -I include 

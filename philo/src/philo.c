@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/06/20 00:46:54 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 01:05:35 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 static void	spend_time(long time)
 {
-	long	start;
+	// long	start;
 
-	start = timestamp();
-	while (timestamp() - start < time)
-		usleep(5);
+	// start = timestamp();
+	// while (timestamp() - start < time)
+	// 	usleep(10);
+	usleep(time);
 }
 
 void	*philo_lifecycle(void *arg)
@@ -31,7 +32,7 @@ void	*philo_lifecycle(void *arg)
 		philo_eat_sleep(t, t->arg);
 		t->state = THINKING;
 		if (t->arg->must_eat != 0 && t->times_eaten == t->arg->must_eat)
-			return (NULL);
+			break ;
 	}
 	return (NULL);
 }
