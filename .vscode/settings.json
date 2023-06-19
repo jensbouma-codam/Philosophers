@@ -38,6 +38,7 @@
 		"unordered_map": "c",
 		"variant": "c",
 		"compare": "c",
-		"cstddef": "c"
+		"cstddef": "c",
+		"philo.h": "c"
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 22:12:03 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/06/19 22:13:06 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,54 +25,62 @@
 # include <limits.h>
 # include <string.h>
 # include <stdio.h>
-# include <sys/time.h>
+# include <pthread.h>
 
 struct s_arg
 {
-	int			philosophers;
-	uint32_t	time_to_die;
-	uint32_t	time_to_eat;
-	uint32_t	time_to_sleep;
+	uint32_t	philosophers;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
 	uint32_t	must_eat;
-};
-
-struct s_fork
-{
-	bool	in_use;
 };
 
 enum e_state
 {
+	JOINING,
 	THINKING,
 	EATING,
 	SLEEPING,
 	DEAD
 };
 
-struct s_philo
+struct s_fork
 {
-
+	pthread_mutex_t	mutex;
+	bool			in_use;
 };
 
 struct s_table
 {
-	int				id;
+	uint32_t		id;
 	struct s_fork	*l_fork;
 	struct s_fork	*r_fork;
-	struct s_philo	*philosopher;
+	pthread_t		philosopher;
 	struct s_table	*next;
 	struct s_table	*prev;
-	long			time_to_die;
+	struct s_arg	*arg;
+	long			dead_date;
 	uint32_t		times_eaten;
 	int				state;
+	bool			dead;
+	bool			took_forks;
+	int				old_state;
 };
 
 struct s_arg	input(int argc, char **argv);
 
-bool			simulation(struct s_table *table, struct s_arg a);
+bool			watch_them_die(struct s_table *table);
+void			*philo_lifecycle(void *arg);
+bool			philo_eat_sleep(struct s_table *table, struct s_arg *a);
 
 struct s_table	*table_cutlery(int i);
 void			table_join(struct s_table *table, struct s_arg a);
+void			table_mutex_init(struct s_table *table);
+void			table_dead_date(struct s_table *table);
+void			table_tread_create(struct s_table *t);
+
+long			timestamp(void);
 
 void			error_exit(char *msg);
 

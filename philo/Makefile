@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/06/14 20:28:17 by jbouma        ########   odam.nl          #
+#    Updated: 2023/06/19 21:36:30 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,12 +15,13 @@ NAME		=	philo
 
 # Set build directories
 BUILDDIR	= build
-TARGET		= bin/$<
+TARGET		= $<
 
 # Compiler Settings
 CC 			:= cc
 CFLAGS		+= -Werror -Wall -Wextra
-# CFLAGS		+= -O3
+# CFLAGS		+= -g
+# CFLAGS		+= -O3 -flto -march=native -mtune=native
 
 # Headers
 INC 		= -I include 
@@ -28,12 +29,14 @@ INC 		= -I include
 # Sources
 SRCDIR		= 	src
 FILES		= 	input.c			\
+				main.c			\
 				philo.c			\
-				simulation.c	\
+				watch.c			\
 				table.c			\
 				tools/error.c	\
 				tools/debug.c	\
 				tools/mem.c		\
+				tools/time.c	\
 	
 SOURCES		=	${addprefix $(SRCDIR)/, $(FILES)}
 
@@ -59,7 +62,7 @@ P_KO			= $(P) "$@${RED}" "Norm KO" "${RESET}"
 
 # Rules
 all: $(NAME)
-	@mkdir -p bin
+	@if [ ! -d $(dir $(TARGET)) ]; then mkdir $(dir $(TARGET)); fi
 	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBARIES_AFILES) $(GLFW) -o $(TARGET)	\
 		&& ($(P) "Executable $(GREEN)" "$< Created $(RESET)" && exit 0)						\
 		|| ($(P) "Executable $(RED)" "$< Compile error $(RESET)" && exit 1)
@@ -82,8 +85,8 @@ clean:
 
 fclean: clean
 	@rm -rf $(LIBDIR)/*/build
-	@rm -rf textures
-	@rm -rf bin
+	@rm -f $(NAME)
+	@if [ "./" != "$(dir $(TARGET))" ]; then rm -rf $(dir $(TARGET)); fi
 
 re: fclean all
 
