@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 19:48:47 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 01:10:00 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 01:35:24 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	is_everybody_full(struct s_table *table, bool *everybody_is_full)
 			*everybody_is_full = false;
 		else
 		{
-			printf("Everybody is full\n");
+			printf("Everybody has eaten %i times\n", t->arg->must_eat);
 			exit(EXIT_SUCCESS);
 		}
 		t = t->next;

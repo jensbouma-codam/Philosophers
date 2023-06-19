@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 01:16:07 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 01:17:07 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	print_mem(void)
 {
 	system("leaks philo");
 }
-
 
 int	main(int argc, char **argv)
 {
