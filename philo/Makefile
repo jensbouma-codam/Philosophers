@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/06/19 21:36:30 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/06/20 00:32:33 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ TARGET		= $<
 CC 			:= cc
 CFLAGS		+= -Werror -Wall -Wextra
 # CFLAGS		+= -g
-# CFLAGS		+= -O3 -flto -march=native -mtune=native
+CFLAGS		+= -O3 -flto -march=native -mtune=native
 
 # Headers
 INC 		= -I include 
@@ -93,6 +93,10 @@ re: fclean all
 debug: CFLAGS += -g -fsanitize=address -D DEBUG=1
 debug: all
 	@printf "$(RED)Compiled in debug / fsanitize=adress mode!!!$(RESET)\n\n"
+
+leaks: CFLAGS += -D DEBUG=2
+leaks: all
+	@printf "$(RED)Compiled in debug / leaks mode!!!$(RESET)\n\n"
 
 norm: $(SOURCES)
 ifneq ($(UNAME_S),Linux)

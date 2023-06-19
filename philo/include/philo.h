@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/19 22:13:06 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 00:16:11 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,19 @@ struct s_table
 	int				old_state;
 };
 
-struct s_arg	input(int argc, char **argv);
+struct s_arg	*input(int argc, char **argv);
 
 bool			watch_them_die(struct s_table *table);
 void			*philo_lifecycle(void *arg);
 bool			philo_eat_sleep(struct s_table *table, struct s_arg *a);
 
 struct s_table	*table_cutlery(int i);
-void			table_join(struct s_table *table, struct s_arg a);
+void			table_join(struct s_table *table, struct s_arg *a);
 void			table_mutex_init(struct s_table *table);
-void			table_dead_date(struct s_table *table);
 void			table_tread_create(struct s_table *t);
+
+void			print_state(struct s_table *t, long ts);
+bool			watch_die(struct s_table *table);
 
 long			timestamp(void);
 

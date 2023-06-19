@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/19 22:23:20 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 00:12:42 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,23 +61,23 @@ void	table_tread_create(struct s_table *t)
 	{
 		if (pthread_create(&(t->philosopher), NULL, &philo_lifecycle, t))
 			error_exit("pthread_create() error");
-		if (pthread_detach(t->philosopher))
+		if (pthread_detach(t->philosopher) != 0)
 			error_exit("pthread_detach() error");
 		t = t->next;
 	}
 }
 
-void	table_join(struct s_table *table, struct s_arg a)
+void	table_join(struct s_table *table, struct s_arg *a)
 {
 	uint64_t		i;
 	struct s_table	*t;
 
-	i = a.philosophers;
+	i = a->philosophers;
 	t = table;
 	while (i > 0)
 	{
 		t->id = i;
-		t->arg = &a;
+		t->arg = a;
 		t->state = JOINING;
 		t->dead = false;
 		t->times_eaten = 0;
@@ -88,13 +88,4 @@ void	table_join(struct s_table *table, struct s_arg a)
 		i--;
 	}
 	t = table;
-}
-
-void	table_dead_date(struct s_table *table)
-{
-	while (table)
-	{
-		table->dead_date = timestamp() + table->arg->time_to_die;
-		table = table->next;
-	}
 }

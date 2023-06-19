@@ -6,11 +6,20 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/06/19 21:52:27 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 00:46:54 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static void	spend_time(long time)
+{
+	long	start;
+
+	start = timestamp();
+	while (timestamp() - start < time)
+		usleep(5);
+}
 
 void	*philo_lifecycle(void *arg)
 {
@@ -37,10 +46,10 @@ bool	philo_eat_sleep(struct s_table *table, struct s_arg *a)
 	table->took_forks = true;
 	table->dead_date = timestamp() + a->time_to_die;
 	table->state = EATING;
-	usleep(a->time_to_eat);
+	spend_time(a->time_to_eat);
 	pthread_mutex_unlock(&table->l_fork->mutex);
 	pthread_mutex_unlock(&table->r_fork->mutex);
 	table->state = SLEEPING;
-	usleep(a->time_to_sleep);
+	spend_time(a->time_to_sleep);
 	return (true);
 }

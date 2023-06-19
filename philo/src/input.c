@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/19 21:23:28 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/19 23:52:52 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,29 +42,30 @@ static uint32_t	mystrtoull(const char *str)
 	return (nbr);
 }
 
-struct s_arg	input(int argc, char **argv)
+struct s_arg	*input(int argc, char **argv)
 {
 	int				i;
 	uint32_t		n;
-	struct s_arg	a;
+	struct s_arg	*a;
 
 	if (argc < 5 || argc > 6)
 		error_exit("Wrong number of arguments");
+	a = mem_add(1, sizeof(struct s_arg));
 	i = 1;
-	a.must_eat = -1;
+	a->must_eat = -1;
 	while (i < argc)
 	{
 		n = mystrtoull(argv[i]);
 		if (i == 1)
-			a.philosophers = n;
+			a->philosophers = n;
 		else if (i == 2)
-			a.time_to_die = (n * 1000);
+			a->time_to_die = (n * 1000);
 		else if (i == 3)
-			a.time_to_eat = (n * 1000);
+			a->time_to_eat = (n * 1000);
 		else if (i == 4)
-			a.time_to_sleep = (n * 1000);
+			a->time_to_sleep = (n * 1000);
 		else if (i == 5)
-			a.must_eat = n;
+			a->must_eat = n;
 		i++;
 	}
 	return (a);
