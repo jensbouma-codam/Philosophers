@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 02:20:55 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 02:58:31 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ struct s_arg
 	long		time_to_die;
 	long		time_to_eat;
 	long		time_to_sleep;
-	uint32_t	must_eat;
+	int32_t		must_eat;
 };
 
 enum e_state
@@ -61,7 +61,7 @@ struct s_table
 	struct s_table	*prev;
 	struct s_arg	*arg;
 	long			dead_date;
-	uint32_t		times_eaten;
+	int32_t			times_eaten;
 	int				state;
 	bool			dead;
 	bool			took_forks;
@@ -79,7 +79,7 @@ void			table_join(struct s_table *table, struct s_arg *a);
 void			table_mutex_init(struct s_table *table, struct s_arg *a);
 void			table_tread_create(struct s_table *t);
 
-void			print_state(struct s_table *t, long ts);
+// void			print_state(struct s_table *t, long ts);
 bool			watch_die(struct s_table *table);
 
 long			timestamp(void);

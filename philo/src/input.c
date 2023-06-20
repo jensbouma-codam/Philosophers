@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/19 23:52:52 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 03:15:44 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ struct s_arg	*input(int argc, char **argv)
 		error_exit("Wrong number of arguments");
 	a = mem_add(1, sizeof(struct s_arg));
 	i = 1;
-	a->must_eat = -1;
+	a->must_eat = -2;
 	while (i < argc)
 	{
 		n = mystrtoull(argv[i]);
