@@ -6,20 +6,21 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 01:02:48 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 02:22:47 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	table_mutex_init(struct s_table *table)
+void	table_mutex_init(struct s_table *table, struct s_arg *a)
 {
 	while (table)
 	{
 		if (pthread_mutex_init(&table->l_fork->mutex, NULL) != 0)
 			error_exit("\n mutex init failed\n");
 		table->l_fork->in_use = false;
-		if (pthread_mutex_init(&table->r_fork->mutex, NULL) != 0)
+		if (a->philosophers != 1
+			&& pthread_mutex_init(&table->r_fork->mutex, NULL) != 0)
 			error_exit("\n mutex init failed\n");
 		table->r_fork->in_use = false;
 		table = table->next;
@@ -63,6 +64,7 @@ void	table_tread_create(struct s_table *t)
 			error_exit("pthread_create() error");
 		if (pthread_detach(t->philosopher) != 0)
 			error_exit("pthread_detach() error");
+		t->dead_date = timestamp() + t->arg->time_to_die;
 		t = t->next;
 	}
 }

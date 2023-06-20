@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 00:16:11 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 02:20:55 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ bool			philo_eat_sleep(struct s_table *table, struct s_arg *a);
 
 struct s_table	*table_cutlery(int i);
 void			table_join(struct s_table *table, struct s_arg *a);
-void			table_mutex_init(struct s_table *table);
+void			table_mutex_init(struct s_table *table, struct s_arg *a);
 void			table_tread_create(struct s_table *t);
 
 void			print_state(struct s_table *t, long ts);
