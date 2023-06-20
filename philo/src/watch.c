@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 19:48:47 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 03:30:19 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 04:05:53 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	print_state(struct s_table *t, long ts)
 {
 	if (t->state != EATING && t->state != JOINING && ts > t->dead_date)
 	{
+		printf("Timestamp: %lu\n", ts);
+		printf("Dead date: %lu\n", t->dead_date);
 		printf("%lu %d died\n", ts / 1000, t->id);
 		exit(EXIT_FAILURE);
 	}
@@ -61,6 +63,8 @@ bool	watch_them_die(struct s_table *table)
 	everybody_is_full = true;
 	while (t)
 	{
+		if (t->dead_date == 0)
+			t->dead_date = timestamp() + t->arg->time_to_die;
 		print_state(t, timestamp());
 		if (everybody_is_full)
 			is_everybody_full(table, &everybody_is_full);
@@ -75,6 +79,7 @@ bool	watch_them_die(struct s_table *table)
 			}
 			everybody_is_full = true;
 		}
+		usleep(100);
 	}
 	return (EXIT_FAILURE);
 }

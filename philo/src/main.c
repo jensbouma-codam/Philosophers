@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 02:20:51 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 04:17:15 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int	main(int argc, char **argv)
 	if (a->philosophers > 4000)
 		error_exit("Program accepts upto 4000 philosophers");
 	table = table_cutlery(a->philosophers);
-	table_mutex_init(table, a);
 	table_join(table, a);
+	table_mutex_init(table, a);
 	table_tread_create(table);
 	return (watch_them_die(table));
 }

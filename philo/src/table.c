@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 03:19:18 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/20 04:17:53 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	table_join(struct s_table *table, struct s_arg *a)
 		t->old_state = JOINING;
 		t = t->next;
 		i--;
+		printf(".");
 	}
-	t = table;
+	// t = table;
 }
