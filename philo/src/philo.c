@@ -6,57 +6,89 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/06/20 04:21:05 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 03:32:25 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	spend_time(long time)
+static void	busy(long dead, struct s_table *t, long time, struct s_msg *p)
 {
 	long	start;
+	long	ts;
 
 	start = timestamp();
-	while (timestamp() - start < time)
-		usleep(10);
-		// ;
+	ts = start;
+	while (ts - start < time)
+	{
+		ts = timestamp();
+		if (timestamp() > dead)
+		{
+			msg_add(p, t->id, "died");
+			msg_print(p);
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
+bool	philo_eat(struct s_table *t, long dead, struct s_simulation *sim)
+{
+	if (pthread_mutex_lock(&t->l_fork->mutex) != 0)
+		return (false);
+	if (sim->philosophers == 1
+		|| pthread_mutex_lock(&t->r_fork->mutex) != 0)
+		return (pthread_mutex_unlock(&t->l_fork->mutex), false);
+	msg_add(sim->printer, t->id, "has taken a fork");
+	msg_add(sim->printer, t->id, "is eating");
+	dead = timestamp() + sim->time_to_die;
+	busy(dead, t, sim->time_to_eat, sim->printer);
+	pthread_mutex_unlock(&t->l_fork->mutex);
+	pthread_mutex_unlock(&t->r_fork->mutex);
+	msg_add(sim->printer, t->id, "is sleeping");
+	busy(dead, t, sim->time_to_sleep, sim->printer);
+	msg_add(sim->printer, t->id, "is thinking");
+	return (true);
+}
+
+void	esr(struct s_table *seat, long dead, struct s_simulation *sim)
+{
+	uint32_t			times_eaten;
+
+	while (true && (sim->must_eat > 0 || sim->must_eat == -2))
+	{
+		if (philo_eat(seat, dead, sim))
+			times_eaten++;
+		else
+		{
+			msg_add(sim->printer, seat->id, "died");
+			msg_print(sim->printer);
+			exit(EXIT_FAILURE);
+		}
+		if (sim->must_eat != -2 && times_eaten == sim->must_eat)
+		{
+			seat->times_eaten = times_eaten;
+			break ;
+		}
+	}
 }
 
 void	*philo_lifecycle(void *arg)
 {
-	struct s_table	*t;
+	struct s_simulation	*sim;
+	struct s_table		*seat;
+	long				dead;
 
-	t = (struct s_table *)arg;
-	while (true)
-	{
-		philo_eat_sleep(t, t->arg);
-		t->state = THINKING;
-		if (t->arg->must_eat != -2 && t->times_eaten == t->arg->must_eat)
-			break ;
-		// spend_time(10);
-		// if (t->id % 2 == 0)
-		// 	spend_time((t->arg->time_to_die - timestamp()) / 2);
-		// else
-		// 	spend_time((t->arg->time_to_die - timestamp()) / 4);
-		// usleep(10);
-	}
+	sim = (struct s_simulation *)arg;
+	seat = sim->table;
+	if (pthread_mutex_lock(&sim->mutex) != 0)
+		error_exit("\n mutex init failed\n");
+	while (seat->seat_taken == true)
+		seat = seat->next;
+	seat->seat_taken = true;
+	dead = 0;
+	if (pthread_mutex_unlock(&sim->mutex))
+		error_exit("\n mutex init failed\n");
+	dead = timestamp() + sim->time_to_die;
+	esr(seat, dead, sim);
 	return (NULL);
-}
-
-bool	philo_eat_sleep(struct s_table *table, struct s_arg *a)
-{
-	if (pthread_mutex_lock(&table->l_fork->mutex) != 0)
-		return (false);
-	if (a->philosophers == 1
-		|| pthread_mutex_lock(&table->r_fork->mutex) != 0)
-		return (pthread_mutex_unlock(&table->l_fork->mutex), false);
-	table->took_forks = true;
-	table->state = EATING;
-	table->dead_date = timestamp() + a->time_to_die;
-	spend_time(a->time_to_eat);
-	pthread_mutex_unlock(&table->l_fork->mutex);
-	pthread_mutex_unlock(&table->r_fork->mutex);
-	table->state = SLEEPING;
-	spend_time(a->time_to_sleep);
-	return (true);
 }

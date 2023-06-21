@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 04:17:15 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 02:40:29 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,20 @@ void	print_mem(void)
 
 int	main(int argc, char **argv)
 {
-	struct s_arg	*a;
-	struct s_table	*table;
+	struct s_simulation		*sim;
 
 	if (DEBUG == 2)
 		atexit(print_mem);
-	a = input(argc, argv);
-	if (a->philosophers > 4000)
+	sim = input(argc, argv);
+	if (sim->philosophers > 4000)
 		error_exit("Program accepts upto 4000 philosophers");
-	table = table_cutlery(a->philosophers);
-	table_join(table, a);
-	table_mutex_init(table, a);
-	table_tread_create(table);
-	return (watch_them_die(table));
+	sim->table = table_cutlery(sim->philosophers);
+	table_join(sim);
+	table_mutex_init(sim);
+	sim->printer = mem_add(1, sizeof(struct s_msg));
+	sim->printer->msg = NULL;
+	pthread_mutex_init(&sim->printer->mutex, NULL);
+	pthread_mutex_init(&sim->mutex, NULL);
+	table_tread_create(sim);
+	return (watch_them_die(sim));
 }

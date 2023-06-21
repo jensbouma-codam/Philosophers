@@ -6,20 +6,23 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 04:17:53 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 02:25:58 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	table_mutex_init(struct s_table *table, struct s_arg *a)
+void	table_mutex_init(struct s_simulation *sim)
 {
+	struct s_table	*table;
+
+	table = sim->table;
 	while (table)
 	{
 		if (pthread_mutex_init(&table->l_fork->mutex, NULL) != 0)
 			error_exit("\n mutex init failed\n");
 		table->l_fork->in_use = false;
-		if (a->philosophers != 1
+		if (sim->philosophers != 1
 			&& pthread_mutex_init(&table->r_fork->mutex, NULL) != 0)
 			error_exit("\n mutex init failed\n");
 		table->r_fork->in_use = false;
@@ -30,65 +33,63 @@ void	table_mutex_init(struct s_table *table, struct s_arg *a)
 struct s_table	*table_cutlery(int i)
 {
 	struct s_table	*table;
-	struct s_table	*node;
+	struct s_table	*new;
 	struct s_fork	*first_fork;
 
 	table = NULL;
 	first_fork = mem_add(1, sizeof(struct s_fork));
 	while (i > 0)
 	{
-		node = mem_add(1, sizeof(struct s_table));
+		new = mem_add(1, sizeof(struct s_table));
 		if (i == 1)
-			node->l_fork = first_fork;
+			new->l_fork = first_fork;
 		else
-			node->l_fork = mem_add(1, sizeof(struct s_fork));
-		node->next = NULL;
+			new->l_fork = mem_add(1, sizeof(struct s_fork));
+		new->next = NULL;
 		if (table != NULL)
 		{
-			node->r_fork = table->l_fork;
-			node->next = table;
+			new->r_fork = table->l_fork;
+			new->next = table;
 		}
 		else
-			node->r_fork = first_fork;
-		table = node;
+			new->r_fork = first_fork;
+		table = new;
 		i--;
 	}
 	return (table);
 }
 
-void	table_tread_create(struct s_table *t)
+void	table_tread_create(struct s_simulation *sim)
 {
-	while (t)
+	struct s_table		*t;
+	struct s_lifecycle	*l;
+	uint32_t			i;
+
+	i = sim->philosophers;
+	t = sim->table;
+	while (i)
 	{
-		if (pthread_create(&(t->philosopher), NULL, &philo_lifecycle, t))
+		if (pthread_create(&(t->philosopher), NULL, &philo_lifecycle, sim))
 			error_exit("pthread_create() error");
 		if (pthread_detach(t->philosopher) != 0)
 			error_exit("pthread_detach() error");
-		t->dead_date = timestamp() + t->arg->time_to_die;
 		t = t->next;
+		i--;
 	}
 }
 
-void	table_join(struct s_table *table, struct s_arg *a)
+void	table_join(struct s_simulation *sim)
 {
-	uint64_t		i;
+	uint32_t		i;
 	struct s_table	*t;
 
-	i = a->philosophers;
-	t = table;
+	i = sim->philosophers;
+	t = sim->table;
 	while (i > 0)
 	{
 		t->id = i;
-		t->arg = a;
-		t->state = JOINING;
-		t->dead = false;
-		t->times_eaten = 0;
-		t->dead_date = 0;
-		t->took_forks = false;
-		t->old_state = JOINING;
+		t->seat_taken = false;
 		t = t->next;
 		i--;
-		printf(".");
 	}
-	// t = table;
 }

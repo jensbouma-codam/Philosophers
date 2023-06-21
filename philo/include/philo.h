@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 02:58:31 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 03:33:29 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,26 @@
 # include <stdio.h>
 # include <pthread.h>
 
-struct s_arg
-{
-	uint32_t	philosophers;
-	long		time_to_die;
-	long		time_to_eat;
-	long		time_to_sleep;
-	int32_t		must_eat;
-};
-
 enum e_state
 {
+	NORMAL,
 	JOINING,
-	THINKING,
-	EATING,
-	SLEEPING,
 	DEAD
+};
+
+struct s_msg_list
+{
+	long				ts;
+	uint32_t			id;
+	char				*msg;
+	struct s_msg_list	*next;
+};
+
+struct s_msg
+{
+	pthread_mutex_t		mutex;
+	struct s_msg_list	*msg;
+	struct s_msg_list	*last;
 };
 
 struct s_fork
@@ -56,38 +60,45 @@ struct s_table
 	uint32_t		id;
 	struct s_fork	*l_fork;
 	struct s_fork	*r_fork;
+	bool			seat_taken;
+	int32_t			times_eaten;
 	pthread_t		philosopher;
 	struct s_table	*next;
 	struct s_table	*prev;
-	struct s_arg	*arg;
-	long			dead_date;
-	int32_t			times_eaten;
-	int				state;
-	bool			dead;
-	bool			took_forks;
-	int				old_state;
 };
 
-struct s_arg	*input(int argc, char **argv);
+struct s_simulation
+{
+	pthread_mutex_t		mutex;
+	uint32_t			philosophers;
+	long				time_to_die;
+	long				time_to_eat;
+	long				time_to_sleep;
+	int32_t				must_eat;
+	struct s_msg		*printer;
+	struct s_table		*table;
+};
 
-bool			watch_them_die(struct s_table *table);
-void			*philo_lifecycle(void *arg);
-bool			philo_eat_sleep(struct s_table *table, struct s_arg *a);
+struct s_simulation	*input(int argc, char **argv);
 
-struct s_table	*table_cutlery(int i);
-void			table_join(struct s_table *table, struct s_arg *a);
-void			table_mutex_init(struct s_table *table, struct s_arg *a);
-void			table_tread_create(struct s_table *t);
+void				*philo_lifecycle(void *arg);
 
-// void			print_state(struct s_table *t, long ts);
-bool			watch_die(struct s_table *table);
+struct s_table		*table_cutlery(int i);
+void				table_join(struct s_simulation *sim);
+void				table_mutex_init(struct s_simulation *sim);
+void				table_tread_create(struct s_simulation *sim);	
 
-long			timestamp(void);
+int					msg_print(struct s_msg *p);
+void				msg_add(struct s_msg *p, uint32_t id, char *msg);
 
-void			error_exit(char *msg);
+bool				watch_them_die(struct s_simulation *sim);	
 
-void			debug(const char *s, ...);
+long				timestamp(void);	
 
-void			*mem_add(size_t count, size_t size);
+void				error_exit(char *msg);	
+
+void				debug(const char *s, ...);	
+
+void				*mem_add(size_t count, size_t size);
 
 #endif

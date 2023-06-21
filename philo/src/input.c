@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/20 03:15:44 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 03:29:43 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,15 @@ static uint32_t	mystrtoull(const char *str)
 	return (nbr);
 }
 
-struct s_arg	*input(int argc, char **argv)
+struct s_simulation	*input(int argc, char **argv)
 {
-	int				i;
-	uint32_t		n;
-	struct s_arg	*a;
+	int					i;
+	uint32_t			n;
+	struct s_simulation	*a;
 
 	if (argc < 5 || argc > 6)
 		error_exit("Wrong number of arguments");
-	a = mem_add(1, sizeof(struct s_arg));
+	a = mem_add(1, sizeof(struct s_simulation));
 	i = 1;
 	a->must_eat = -2;
 	while (i < argc)
