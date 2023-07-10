@@ -39,6 +39,9 @@
 		"variant": "c",
 		"compare": "c",
 		"cstddef": "c",
-		"philo.h": "c"
+		"philo.h": "c",
+		"stdio.h": "c",
+		"string.h": "c",
+		"limits.h": "c"
 	}
 }
