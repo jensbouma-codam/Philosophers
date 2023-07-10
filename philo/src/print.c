@@ -6,24 +6,24 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/06/21 04:36:28 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/10 23:23:34 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	msg_print(struct s_msg *p)
+int	msg_print(struct s_msg_queue *p)
 {
-	struct s_msg_list	*msg;
-	struct s_msg_list	*next;
-	int					i;
+	struct s_msg	*msg;
 
 	pthread_mutex_lock(&p->mutex);
 	msg = p->msg;
-	i = 0;
 	while (msg)
 	{
-		printf("%ld %d %s\n", msg->ts / 1000, msg->id, msg->msg);
+		if ((msg->timestamp % 1000) >= 500)
+			printf("%ld %d %s\n", (msg->timestamp / 1000) + 1, msg->id, msg->msg);
+		else
+			printf("%ld %d %s\n", msg->timestamp / 1000, msg->id, msg->msg);
 		msg = msg->next;
 	}
 	p->msg = NULL;
@@ -37,6 +37,7 @@ char	*str_cpy(char *src)
 	int		i;
 	char	*dst;
 
+	i = 0;
 	while (src[i])
 		++i;
 	dst = mem_add(i + 1, sizeof(char));
@@ -49,14 +50,14 @@ char	*str_cpy(char *src)
 	return (dst);
 }
 
-void	msg_add(struct s_msg *p, uint32_t id, char *msg)
+void	msg_add(struct s_msg_queue *p, uint32_t id, char *msg)
 {
-	struct s_msg_list	*new;
+	struct s_msg	*new;
 
 	if (pthread_mutex_lock(&p->mutex) != 0)
 		error_exit("mutex lock failed\n");
-	new = mem_add(1, sizeof(struct s_msg_list));
-	new->ts = timestamp();
+	new = mem_add(1, sizeof(struct s_msg));
+	new->timestamp = timestamp();
 	new->msg = msg;
 	new->id = id;
 	new->next = NULL;

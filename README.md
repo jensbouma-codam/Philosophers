@@ -87,7 +87,6 @@ The simulation has the following rules:
 To complete the assignment, you need to write two programs: one for the mandatory part and another for the bonus part (optional). Both programs must adhere to the following rules:
 
 - Global variables are not allowed.
-- Your program(s) should accept the following arguments:
 - Each philosopher is assigned a number from 1 to `number_of_philosophers`.
 - Philosopher number 1 sits next to philosopher number `number_of_philosophers`. Any other philosopher number N sits between philosopher number N - 1 and philosopher number N + 1.
 

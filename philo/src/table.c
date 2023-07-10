@@ -6,13 +6,18 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/21 04:21:00 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/10 22:14:07 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	table_mutex_init(struct s_simulation *sim)
+/**
+ * @brief Initialize mutexes for forks.
+ * 
+ * @param sim 
+ */
+void	table_add_mutexes(struct s_simulation *sim)
 {
 	struct s_table	*table;
 
@@ -30,7 +35,35 @@ void	table_mutex_init(struct s_simulation *sim)
 	}
 }
 
-struct s_table	*table_cutlery(int i)
+
+/**
+ * @brief Give each philosopher a seat at the table.
+ * 
+ * @param sim 
+ */
+void	table_add_seats(struct s_simulation *sim)
+{
+	uint32_t		i;
+	struct s_table	*t;
+
+	i = 0;
+	t = sim->table;
+	while (++i <= sim->philosophers)
+	{
+		t->id = i;
+		t->seat_taken = false;
+		t->is_eating = false;
+		t = t->next;
+	}
+}
+
+/**
+ * @brief Create a table object with forks.
+ * 
+ * @param i Amount of philosophers
+ * @return struct s_table* 
+ */
+struct s_table	*table_add_cutlery(int i)
 {
 	struct s_table	*table;
 	struct s_table	*new;
@@ -57,39 +90,4 @@ struct s_table	*table_cutlery(int i)
 		--i;
 	}
 	return (table);
-}
-
-void	table_tread_create(struct s_simulation *sim)
-{
-	struct s_table		*t;
-	struct s_lifecycle	*l;
-	uint32_t			i;
-
-	i = sim->philosophers;
-	t = sim->table;
-	while (i)
-	{
-		if (pthread_create(&(t->philosopher), NULL, &philo_lifecycle, sim))
-			error_exit("pthread_create() error");
-		if (pthread_detach(t->philosopher) != 0)
-			error_exit("pthread_detach() error");
-		t = t->next;
-		--i;
-	}
-}
-
-void	table_join(struct s_simulation *sim)
-{
-	uint32_t		i;
-	struct s_table	*t;
-
-	i = sim->philosophers;
-	t = sim->table;
-	while (i > 0)
-	{
-		t->id = i;
-		t->seat_taken = false;
-		t = t->next;
-		--i;
-	}
 }

@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/21 04:44:19 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/10 22:27:55 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # ifndef DEBUG
 #  define DEBUG 0
 # endif
+
+# define MAX_THREATS 709
 
 # include <stdbool.h>
 # include <stddef.h>
@@ -27,26 +29,19 @@
 # include <stdio.h>
 # include <pthread.h>
 
-enum e_state
-{
-	NORMAL,
-	JOINING,
-	DEAD
-};
-
-struct s_msg_list
-{
-	long				ts;
-	uint32_t			id;
-	char				*msg;
-	struct s_msg_list	*next;
-};
-
 struct s_msg
 {
-	pthread_mutex_t		mutex;
-	struct s_msg_list	*msg;
-	struct s_msg_list	*last;
+	long			timestamp;
+	uint32_t		id;
+	char			*msg;
+	struct s_msg	*next;
+};
+
+struct s_msg_queue
+{
+	pthread_mutex_t	mutex;
+	struct s_msg	*msg;
+	struct s_msg	*last;
 };
 
 struct s_fork
@@ -57,13 +52,15 @@ struct s_fork
 
 struct s_table
 {
+	pthread_mutex_t	mutex;
+	pthread_t		philosopher;
 	uint32_t		id;
 	struct s_fork	*l_fork;
 	struct s_fork	*r_fork;
-	bool			seat_taken;
 	long			dead;
 	int32_t			times_eaten;
-	pthread_t		philosopher;
+	bool			seat_taken;
+	bool			is_eating;
 	struct s_table	*next;
 	struct s_table	*prev;
 };
@@ -72,11 +69,11 @@ struct s_simulation
 {
 	pthread_mutex_t		mutex;
 	uint32_t			philosophers;
-	long				time_to_die;
-	long				time_to_eat;
-	long				time_to_sleep;
-	int32_t				must_eat;
-	struct s_msg		*printer;
+	uint32_t			time_to_die;
+	uint32_t			time_to_eat;
+	uint32_t			time_to_sleep;
+	int32_t				times_to_eat;
+	struct s_msg_queue	*msg_queue;
 	struct s_table		*table;
 };
 
@@ -84,13 +81,13 @@ struct s_simulation	*input(int argc, char **argv);
 
 void				*philo_lifecycle(void *arg);
 
-struct s_table		*table_cutlery(int i);
-void				table_join(struct s_simulation *sim);
-void				table_mutex_init(struct s_simulation *sim);
-void				table_tread_create(struct s_simulation *sim);	
+struct s_table		*table_add_cutlery(int i);
+void				table_add_seats(struct s_simulation *sim);
+void				table_add_mutexes(struct s_simulation *sim);
+void				philo_join_table(struct s_simulation *sim);	
 
-int					msg_print(struct s_msg *p);
-void				msg_add(struct s_msg *p, uint32_t id, char *msg);
+int					msg_print(struct s_msg_queue *p);
+void				msg_add(struct s_msg_queue *p, uint32_t id, char *msg);
 
 bool				watch_them_die(struct s_simulation *sim);	
 

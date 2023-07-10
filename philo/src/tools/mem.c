@@ -6,12 +6,20 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 17:01:34 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/14 19:26:55 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/10 12:45:16 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Allocate memory and initialize it to zero.
+ * If malloc fails, exit program.
+ * 
+ * @param count 
+ * @param size 
+ * @return void* 
+ */
 void	*mem_add(size_t count, size_t size)
 {
 	char	*ptr;

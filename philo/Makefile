@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/06/20 22:59:30 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/10 12:31:03 by jbouma        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,9 @@ TARGET		= $<
 
 # Compiler Settings
 CC 			:= cc
-# CFLAGS		+= -Werror -Wall -Wextra
+CFLAGS		+= -Werror -Wall -Wextra
 # CFLAGS		+= -g
-CFLAGS		+= -O3 -flto -march=native -mtune=native
+# CFLAGS		+= -O3 -flto -march=native -mtune=native
 
 # Headers
 INC 		= -I include 
