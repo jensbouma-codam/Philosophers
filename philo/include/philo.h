@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/21 03:33:29 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 04:44:19 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ struct s_table
 	struct s_fork	*l_fork;
 	struct s_fork	*r_fork;
 	bool			seat_taken;
+	long			dead;
 	int32_t			times_eaten;
 	pthread_t		philosopher;
 	struct s_table	*next;

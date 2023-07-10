@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/21 02:25:58 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 04:21:00 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ struct s_table	*table_cutlery(int i)
 		else
 			new->r_fork = first_fork;
 		table = new;
-		i--;
+		--i;
 	}
 	return (table);
 }
@@ -74,7 +74,7 @@ void	table_tread_create(struct s_simulation *sim)
 		if (pthread_detach(t->philosopher) != 0)
 			error_exit("pthread_detach() error");
 		t = t->next;
-		i--;
+		--i;
 	}
 }
 
@@ -90,6 +90,6 @@ void	table_join(struct s_simulation *sim)
 		t->id = i;
 		t->seat_taken = false;
 		t = t->next;
-		i--;
+		--i;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/06/21 03:29:43 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/06/21 04:18:24 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ static uint32_t	mystrtoull(const char *str)
 	while (str[i])
 	{
 		if (str[i] == '+')
-			i++;
+			++i;
 		if (!isdigit(str[i]))
 			error_exit("Program only accepts numbers");
 		if ((nbr * 10) + (str[i] - '0') > INT32_MAX)
 			error_exit("Program accepts numbers upto 2147483647");
 		nbr = (nbr * 10) + (str[i] - '0');
-		i++;
+		++i;
 	}
 	return (nbr);
 }
@@ -66,7 +66,7 @@ struct s_simulation	*input(int argc, char **argv)
 			a->time_to_sleep = (n * 1000);
 		else if (i == 5)
 			a->must_eat = n;
-		i++;
+		++i;
 	}
 	return (a);
 }
