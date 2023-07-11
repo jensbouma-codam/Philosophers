@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/10 22:27:55 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 13:23:30 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ struct s_table
 
 struct s_simulation
 {
-	pthread_mutex_t		mutex;
+	long				start;
 	uint32_t			philosophers;
 	uint32_t			time_to_die;
 	uint32_t			time_to_eat;
@@ -89,7 +89,7 @@ void				philo_join_table(struct s_simulation *sim);
 int					msg_print(struct s_msg_queue *p);
 void				msg_add(struct s_msg_queue *p, uint32_t id, char *msg);
 
-bool				watch_them_die(struct s_simulation *sim);	
+void				watch_them_die(struct s_simulation *sim);	
 
 long				timestamp(void);	
 

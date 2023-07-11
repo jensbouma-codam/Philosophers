@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/10 22:14:07 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 13:19:42 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	table_add_mutexes(struct s_simulation *sim)
 		table = table->next;
 	}
 }
-
 
 /**
  * @brief Give each philosopher a seat at the table.

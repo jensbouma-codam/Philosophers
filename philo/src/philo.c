@@ -6,31 +6,38 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/10 23:21:08 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 13:40:39 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	philo_spend_time(uint32_t time)
+{
+	const long	start = timestamp();
+
+	while (timestamp() < start + time)
+		usleep(100);
+}
+
 bool	philo_eat(struct s_table *p, struct s_simulation *sim)
 {
+	if (p->l_fork->in_use || p->r_fork->in_use || sim->philosophers < 1)
+		return (false);
 	pthread_mutex_lock(&p->l_fork->mutex);
 	pthread_mutex_lock(&p->r_fork->mutex);
-	if (p->r_fork == p->l_fork || sim->philosophers < 1)
-	{
-		pthread_mutex_unlock(&p->l_fork->mutex);
-		pthread_mutex_unlock(&p->r_fork->mutex);
-		return (false);
-	}
-
+	p->l_fork->in_use = true;
 	msg_add(sim->msg_queue, p->id, "has taken a fork");
+	p->r_fork->in_use = true;
 	msg_add(sim->msg_queue, p->id, "has taken a fork");
 	msg_add(sim->msg_queue, p->id, "is eating");
-	p->dead = timestamp() + sim->time_to_die;
+	p->dead = timestamp() + sim->time_to_die + 1;
 	p->is_eating = true;
 	p->times_eaten++;
-	usleep(sim->time_to_eat);
+	philo_spend_time(sim->time_to_eat);
 	p->is_eating = false;
+	p->l_fork->in_use = false;
+	p->r_fork->in_use = false;
 	pthread_mutex_unlock(&p->l_fork->mutex);
 	pthread_mutex_unlock(&p->r_fork->mutex);
 	return (true);
@@ -39,15 +46,17 @@ bool	philo_eat(struct s_table *p, struct s_simulation *sim)
 void	eatsleeprepeat(struct s_table *seat, struct s_simulation *sim)
 {
 	seat->times_eaten = 0;
-	seat->dead = timestamp() + sim->time_to_die;
-	while (true && (sim->times_to_eat > 0 || sim->times_to_eat == -2))
+	seat->dead = sim->time_to_die;
+	if (sim->times_to_eat == 0 && sim->times_to_eat != -2)
+		return ;
+	while (true)
 	{
 		if (philo_eat(seat, sim))
 		{
 			if (seat->times_eaten == sim->times_to_eat)
 				break ;
 			msg_add(sim->msg_queue, seat->id, "is sleeping");
-			usleep(sim->time_to_sleep);
+			philo_spend_time(sim->time_to_sleep);
 			msg_add(sim->msg_queue, seat->id, "is thinking");
 		}
 	}
@@ -60,13 +69,9 @@ void	*philo_lifecycle(void *arg)
 
 	sim = (struct s_simulation *)arg;
 	seat = sim->table;
-	if (pthread_mutex_lock(&sim->mutex) != 0)
-		error_exit("\n mutex lock failed\n");
 	while (seat->seat_taken == true)
 		seat = seat->next;
 	seat->seat_taken = true;
-	if (pthread_mutex_unlock(&sim->mutex))
-		error_exit("\n mutex unlock failed\n");
 	eatsleeprepeat(seat, sim);
 	return (NULL);
 }

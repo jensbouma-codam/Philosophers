@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 19:30:26 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/06/20 03:42:23 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/11 12:24:01 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 
 long	timestamp(void)
 {
+	static long		start = 0;
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) != 0)
 		error_exit("gettimeofday failed");
-	return ((time.tv_sec * 1000000 + time.tv_usec));
+	if (start == 0)
+		start = (time.tv_sec * 1000000 + time.tv_usec);
+	return ((time.tv_sec * 1000000 + time.tv_usec) - start);
 }

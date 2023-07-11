@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/10 23:23:34 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 13:02:59 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,7 @@ int	msg_print(struct s_msg_queue *p)
 	msg = p->msg;
 	while (msg)
 	{
-		if ((msg->timestamp % 1000) >= 500)
-			printf("%ld %d %s\n", (msg->timestamp / 1000) + 1, msg->id, msg->msg);
-		else
-			printf("%ld %d %s\n", msg->timestamp / 1000, msg->id, msg->msg);
+		printf("%ld %d %s\n", msg->timestamp / 1000, msg->id, msg->msg);
 		msg = msg->next;
 	}
 	p->msg = NULL;
