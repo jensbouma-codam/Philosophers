@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/11 13:40:39 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 16:09:55 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,13 @@ bool	philo_eat(struct s_table *p, struct s_simulation *sim)
 	pthread_mutex_lock(&p->l_fork->mutex);
 	pthread_mutex_lock(&p->r_fork->mutex);
 	p->l_fork->in_use = true;
-	msg_add(sim->msg_queue, p->id, "has taken a fork");
+	if (msg_add(sim->msg_queue, p->id, "has taken a fork"))
+		return (false);
 	p->r_fork->in_use = true;
-	msg_add(sim->msg_queue, p->id, "has taken a fork");
-	msg_add(sim->msg_queue, p->id, "is eating");
+	if (msg_add(sim->msg_queue, p->id, "has taken a fork"))
+		return (false);
+	if (msg_add(sim->msg_queue, p->id, "is eating"))
+		return (false);
 	p->dead = timestamp() + sim->time_to_die + 1;
 	p->is_eating = true;
 	p->times_eaten++;
@@ -43,23 +46,27 @@ bool	philo_eat(struct s_table *p, struct s_simulation *sim)
 	return (true);
 }
 
-void	eatsleeprepeat(struct s_table *seat, struct s_simulation *sim)
+static bool	eatsleeprepeat(struct s_table *seat, struct s_simulation *sim)
 {
 	seat->times_eaten = 0;
 	seat->dead = sim->time_to_die;
 	if (sim->times_to_eat == 0 && sim->times_to_eat != -2)
-		return ;
+		return (false);
 	while (true)
 	{
 		if (philo_eat(seat, sim))
 		{
 			if (seat->times_eaten == sim->times_to_eat)
 				break ;
-			msg_add(sim->msg_queue, seat->id, "is sleeping");
+			if (msg_add(sim->msg_queue, seat->id, "is sleeping"))
+				return (false);
 			philo_spend_time(sim->time_to_sleep);
-			msg_add(sim->msg_queue, seat->id, "is thinking");
+			if (msg_add(sim->msg_queue, seat->id, "is thinking"))
+				return (false);
 		}
+		usleep(100);
 	}
+	return (false);
 }
 
 void	*philo_lifecycle(void *arg)
@@ -72,7 +79,8 @@ void	*philo_lifecycle(void *arg)
 	while (seat->seat_taken == true)
 		seat = seat->next;
 	seat->seat_taken = true;
-	eatsleeprepeat(seat, sim);
+	if (!eatsleeprepeat(seat, sim))
+		return (NULL);
 	return (NULL);
 }
 

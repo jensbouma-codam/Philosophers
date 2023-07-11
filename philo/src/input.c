@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/10 17:47:45 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 15:35:36 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,15 @@ static uint32_t	mystrtoull(const char *str)
 	i = 0;
 	nbr = 0;
 	if ((str[i] == '-'))
-		error_exit("Program only accepts positive numbers");
+		return (error_exit("Program only accepts positive numbers"));
 	while (str[i])
 	{
 		if (str[i] == '+')
 			++i;
 		if (!isdigit(str[i]))
-			error_exit("Program only accepts numbers");
+			return (error_exit("Program only accepts numbers"));
 		if ((nbr * 10) + (str[i] - '0') > INT32_MAX)
-			error_exit("Program accepts numbers upto 2147483647");
+			return (error_exit("Program accepts numbers upto 2147483647"));
 		nbr = (nbr * 10) + (str[i] - '0');
 		++i;
 	}
@@ -63,9 +63,9 @@ struct s_simulation	*input(int argc, char **argv)
 	uint32_t			n;
 	struct s_simulation	*a;
 
-	if (argc < 5 || argc > 6)
-		error_exit("Wrong number of arguments");
 	a = mem_add(1, sizeof(struct s_simulation));
+	if (!a)
+		return (NULL);
 	i = 1;
 	a->times_to_eat = -2;
 	while (i < argc)

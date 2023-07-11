@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/12 17:51:59 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/10 12:44:44 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 14:57:26 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
  * 
  * @param msg 
  */
-void	error_exit(char *msg)
+bool	error_exit(char *msg)
 {
 	if (msg)
 		printf("%sError\t%s\n%s", RED, msg, NORMAL);
-	exit (EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
