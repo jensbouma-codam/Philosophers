@@ -1,6 +1,5 @@
 philo/build
 philo/bin
-test.sh
 philo/build/src/input.o
 errors_log
 philo/philo
