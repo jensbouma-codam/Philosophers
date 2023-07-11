@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 17:50:00 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 18:21:51 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ struct s_simulation
 	struct s_table		*table;
 };
 
-struct s_simulation	*input(int argc, char **argv);
+struct s_simulation	*input(int argc, char **argv, int i);
 
 void				*philo_lifecycle(void *arg);
 

@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 17:16:00 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 18:24:01 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static bool	isdigit(int c)
 	return (0);
 }
 
-static uint32_t	mystrtoull(const char *str)
+static int32_t	mystrtoull(const char *str)
 {
 	int			i;
 	uint64_t	nbr;
@@ -27,15 +27,15 @@ static uint32_t	mystrtoull(const char *str)
 	i = 0;
 	nbr = 0;
 	if ((str[i] == '-'))
-		return (errorlog("Program only accepts positive numbers"));
+		return (errorlog("Program only accepts positive numbers"), -1);
 	while (str[i])
 	{
 		if (str[i] == '+')
 			++i;
 		if (!isdigit(str[i]))
-			return (errorlog("Program only accepts numbers"));
+			return (errorlog("Program only accepts numbers"), -1);
 		if ((nbr * 10) + (str[i] - '0') > INT32_MAX)
-			return (errorlog("Program accepts numbers upto 2147483647"));
+			return (errorlog("Program accepts numbers upto 2147483647"), -1);
 		nbr = (nbr * 10) + (str[i] - '0');
 		++i;
 	}
@@ -57,21 +57,20 @@ static uint32_t	mystrtoull(const char *str)
  * @param argv 
  * @return struct s_simulation* 
  */
-struct s_simulation	*input(int argc, char **argv)
+struct s_simulation	*input(int argc, char **argv, int i)
 {
-	int					i;
-	uint32_t			n;
+	int32_t				n;
 	struct s_simulation	*sim;
 
 	sim = ft_calloc(1, sizeof(struct s_simulation));
 	if (!sim)
-		return (NULL);
-	i = 0;
-	sim->times_to_eat = 0;
-	sim->start = timestamp();
+		return (errorlog("Malloc failed"), NULL);
+	sim->times_to_eat = -1;
 	while (++i < argc)
 	{
 		n = mystrtoull(argv[i]);
+		if (n <= 0)
+			return (free(sim), errorlog("Program doesn't accept zero's"), NULL);
 		if (i == 1)
 			sim->philosophers = n;
 		else if (i == 2)
