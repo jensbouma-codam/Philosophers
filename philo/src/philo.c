@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/11 16:09:55 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 17:16:25 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static bool	eatsleeprepeat(struct s_table *seat, struct s_simulation *sim)
 {
 	seat->times_eaten = 0;
 	seat->dead = sim->time_to_die;
-	if (sim->times_to_eat == 0 && sim->times_to_eat != -2)
+	if (sim->times_to_eat == 0)
 		return (false);
 	while (true)
 	{
@@ -94,9 +94,9 @@ void	philo_join_table(struct s_simulation *sim)
 	while (++i <= sim->philosophers)
 	{
 		if (pthread_create(&(t->philosopher), NULL, &philo_lifecycle, sim))
-			error_exit("pthread_create() error");
+			errorlog("pthread_create() error");
 		if (pthread_detach(t->philosopher) != 0)
-			error_exit("pthread_detach() error");
+			errorlog("pthread_detach() error");
 		t = t->next;
 	}
 }

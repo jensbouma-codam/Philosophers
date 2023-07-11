@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 16:58:28 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 17:50:00 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,22 +80,23 @@ struct s_simulation	*input(int argc, char **argv);
 
 void				*philo_lifecycle(void *arg);
 
-struct s_table		*table_add_cutlery(int i);
-void				table_add_seats(struct s_simulation *sim);
-void				table_add_mutexes(struct s_simulation *sim);
+struct s_table		*table_prepare(int i);
+// void				table_add_seats(struct s_simulation *sim);
+// void				table_add_mutexes(struct s_simulation *sim);
 void				philo_join_table(struct s_simulation *sim);	
 
 int					msg_print(struct s_msg_queue *p);
 bool				msg_add(struct s_msg_queue *p, uint32_t id, char *msg);
+struct	s_msg_queue	*msg_queue_init(struct s_simulation *sim);
 
-bool				watch_them_die(struct s_simulation *sim);	
+bool				watch_them_die(struct s_simulation *sim);
 
 long				timestamp(void);	
 
-bool				error_exit(char *msg);	
+bool				errorlog(char *msg);	
 
 void				debug(const char *s, ...);	
 
-void				*mem_add(size_t count, size_t size);
+void				*ft_calloc(size_t count, size_t size);
 
 #endif

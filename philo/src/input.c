@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 15:35:36 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 17:16:00 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,15 @@ static uint32_t	mystrtoull(const char *str)
 	i = 0;
 	nbr = 0;
 	if ((str[i] == '-'))
-		return (error_exit("Program only accepts positive numbers"));
+		return (errorlog("Program only accepts positive numbers"));
 	while (str[i])
 	{
 		if (str[i] == '+')
 			++i;
 		if (!isdigit(str[i]))
-			return (error_exit("Program only accepts numbers"));
+			return (errorlog("Program only accepts numbers"));
 		if ((nbr * 10) + (str[i] - '0') > INT32_MAX)
-			return (error_exit("Program accepts numbers upto 2147483647"));
+			return (errorlog("Program accepts numbers upto 2147483647"));
 		nbr = (nbr * 10) + (str[i] - '0');
 		++i;
 	}
@@ -61,27 +61,27 @@ struct s_simulation	*input(int argc, char **argv)
 {
 	int					i;
 	uint32_t			n;
-	struct s_simulation	*a;
+	struct s_simulation	*sim;
 
-	a = mem_add(1, sizeof(struct s_simulation));
-	if (!a)
+	sim = ft_calloc(1, sizeof(struct s_simulation));
+	if (!sim)
 		return (NULL);
-	i = 1;
-	a->times_to_eat = -2;
-	while (i < argc)
+	i = 0;
+	sim->times_to_eat = 0;
+	sim->start = timestamp();
+	while (++i < argc)
 	{
 		n = mystrtoull(argv[i]);
 		if (i == 1)
-			a->philosophers = n;
+			sim->philosophers = n;
 		else if (i == 2)
-			a->time_to_die = (n * 1000);
+			sim->time_to_die = (n * 1000);
 		else if (i == 3)
-			a->time_to_eat = (n * 1000);
+			sim->time_to_eat = (n * 1000);
 		else if (i == 4)
-			a->time_to_sleep = (n * 1000);
+			sim->time_to_sleep = (n * 1000);
 		else if (i == 5)
-			a->times_to_eat = n;
-		++i;
+			sim->times_to_eat = n;
 	}
-	return (a);
+	return (sim);
 }
