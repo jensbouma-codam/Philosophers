@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 18:21:51 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 18:25:30 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 # ifndef DEBUG
 #  define DEBUG 0
 # endif
-
-# define MAX_THREATS 709
 
 # include <stdbool.h>
 # include <stddef.h>

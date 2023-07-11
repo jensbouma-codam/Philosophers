@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 18:21:33 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 18:30:00 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ int	main(int argc, char **argv)
 	sim = input(argc, argv, 0);
 	if (!sim)
 		return (EXIT_FAILURE);
-	if (sim->philosophers > MAX_THREATS)
-		return (free(sim), errorlog("Program accepts upto 709 philosophers"));
+	if (sim->philosophers > 200)
+		return (free(sim), errorlog("Program accepts upto 200 philosophers"));
 	sim->msg_queue = ft_calloc(1, sizeof(struct s_msg_queue));
 	if (!sim->msg_queue)
 		return (free(sim), errorlog("Malloc failed"));

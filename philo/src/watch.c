@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 19:48:47 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 16:07:16 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 18:30:10 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static bool	is_dead(struct s_table *seat, struct s_simulation *sim)
 	if (seat->dead != 0 && timestamp() > seat->dead)
 	{
 		msg_add(sim->msg_queue, seat->id, "died");
+		msg_print(sim->msg_queue);
 		return (true);
 	}
 	return (false);
