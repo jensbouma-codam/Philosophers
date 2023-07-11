@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 15:57:00 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 16:58:28 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ struct s_fork
 
 struct s_table
 {
-	// pthread_mutex_t	mutex;
 	pthread_t		philosopher;
 	uint32_t		id;
 	struct s_fork	*l_fork;

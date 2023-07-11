@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 20:27:40 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 15:38:31 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 17:01:49 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,22 +73,18 @@ struct s_table	*table_add_cutlery(int i)
 	while (i > 0)
 	{
 		new = mem_add(1, sizeof(struct s_table));
-		if (i == 1)
+		if (i-- == 1)
 			new->l_fork = first_fork;
 		else
 			new->l_fork = mem_add(1, sizeof(struct s_fork));
 		if (!new || !first_fork || !new->l_fork)
 			return (NULL);
-		new->next = NULL;
+		new->next = table;
 		if (table != NULL)
-		{
 			new->r_fork = table->l_fork;
-			new->next = table;
-		}
 		else
 			new->r_fork = first_fork;
 		table = new;
-		--i;
 	}
 	return (table);
 }

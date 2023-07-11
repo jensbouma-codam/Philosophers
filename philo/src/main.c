@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 15:57:33 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/11 16:58:44 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	free_willy(struct s_simulation *sim)
 		sim->table = sim->table->next;
 	}
 	free(sim);
-
 }
 
 int	main(int argc, char **argv)
