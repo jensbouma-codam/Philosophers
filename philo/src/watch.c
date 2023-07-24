@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 19:48:47 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 18:30:10 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/24 16:29:12 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ bool	watch_them_die(struct s_simulation *sim)
 		table = sim->table;
 		while (i++ < sim->philosophers)
 		{
+			pthread_mutex_lock(&table->mutex);
 			if (!table->is_eating && is_dead(table, sim))
 				return (false);
-			if (table->times_eaten >= sim->times_to_eat)
+			else if (table->times_eaten >= sim->times_to_eat)
 				++x;
+			pthread_mutex_unlock(&table->mutex);
 			table = table->next;
 		}
 		msg_print(sim->msg_queue);
@@ -49,6 +51,6 @@ bool	watch_them_die(struct s_simulation *sim)
 			printf("Everyone has eaten %d times\n", sim->times_to_eat);
 			return (true);
 		}
-		usleep(1000);
+		usleep(1000); 
 	}
 }

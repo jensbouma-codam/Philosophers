@@ -6,11 +6,44 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/11 17:42:48 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/24 16:07:12 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	put_str(char *str)
+{
+	write(1, str, strlen(str));
+}
+
+void	put_num(int num)
+{
+	char	c;
+
+	if (num < 0)
+	{
+		write(1, "-", 1);
+		num = -num;
+	}
+	if (num / 10)
+		put_num(num / 10);
+	c = num % 10 + '0';
+	write(1, &c, 1);
+}
+
+void	printmsg(struct s_msg *msg)
+{
+	// write(1, "\033[0;32m", 8);
+	put_num(msg->timestamp / 1000);
+	write(1, " ", 1);
+	// write(1, "\033[0;33m", 8);
+	put_num(msg->id);
+	write(1, " ", 1);
+	// write(1, "\033[0;36m", 8);
+	put_str(msg->msg);
+	write(1, "\n", 1);
+}
 
 int	msg_print(struct s_msg_queue *p)
 {
@@ -21,7 +54,12 @@ int	msg_print(struct s_msg_queue *p)
 	msg = p->msg;
 	while (msg)
 	{
-		printf("%ld %d %s\n", msg->timestamp / 1000, msg->id, msg->msg);
+		printmsg(msg);
+		msg = msg->next;
+	}
+	msg = p->msg;
+	while (msg)
+	{
 		free(msg);
 		msg = msg->next;
 	}
@@ -29,26 +67,6 @@ int	msg_print(struct s_msg_queue *p)
 	p->last = NULL;
 	pthread_mutex_unlock(&p->mutex);
 	return (0);
-}
-
-char	*str_cpy(char *src)
-{
-	int		i;
-	char	*dst;
-
-	i = 0;
-	while (src[i])
-		++i;
-	dst = ft_calloc(i + 1, sizeof(char));
-	if (!dst)
-		return (NULL);
-	dst[i--] = '\0';
-	while (src[i])
-	{
-		dst[i] = src[i];
-		--i;
-	}
-	return (dst);
 }
 
 bool	msg_add(struct s_msg_queue *p, uint32_t id, char *msg)

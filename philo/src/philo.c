@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 20:06:17 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/11 17:16:25 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/24 17:04:56 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	philo_spend_time(uint32_t time)
 	const long	start = timestamp();
 
 	while (timestamp() < start + time)
-		usleep(100);
+		usleep(1);
 }
 
 bool	philo_eat(struct s_table *p, struct s_simulation *sim)
@@ -34,11 +34,15 @@ bool	philo_eat(struct s_table *p, struct s_simulation *sim)
 		return (false);
 	if (msg_add(sim->msg_queue, p->id, "is eating"))
 		return (false);
-	p->dead = timestamp() + sim->time_to_die + 1;
+	pthread_mutex_lock(&p->mutex);
+	p->dead = timestamp() + sim->time_to_die;
 	p->is_eating = true;
 	p->times_eaten++;
+	pthread_mutex_unlock(&p->mutex);
 	philo_spend_time(sim->time_to_eat);
+	// pthread_mutex_lock(&p->mutex);
 	p->is_eating = false;
+	// pthread_mutex_unlock(&p->mutex);
 	p->l_fork->in_use = false;
 	p->r_fork->in_use = false;
 	pthread_mutex_unlock(&p->l_fork->mutex);
@@ -64,7 +68,6 @@ static bool	eatsleeprepeat(struct s_table *seat, struct s_simulation *sim)
 			if (msg_add(sim->msg_queue, seat->id, "is thinking"))
 				return (false);
 		}
-		usleep(100);
 	}
 	return (false);
 }
@@ -76,6 +79,7 @@ void	*philo_lifecycle(void *arg)
 
 	sim = (struct s_simulation *)arg;
 	seat = sim->table;
+	
 	while (seat->seat_taken == true)
 		seat = seat->next;
 	seat->seat_taken = true;
@@ -93,6 +97,7 @@ void	philo_join_table(struct s_simulation *sim)
 	t = sim->table;
 	while (++i <= sim->philosophers)
 	{
+		pthread_mutex_init(&t->mutex, NULL);
 		if (pthread_create(&(t->philosopher), NULL, &philo_lifecycle, sim))
 			errorlog("pthread_create() error");
 		if (pthread_detach(t->philosopher) != 0)
