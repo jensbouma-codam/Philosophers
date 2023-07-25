@@ -3,3 +3,4 @@ philo/bin
 philo/build/src/input.o
 errors_log
 philo/philo
+philo/output.txt
