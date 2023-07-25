@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 03:03:09 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 14:50:35 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,20 @@ typedef struct s_value
 	pthread_mutex_t		mutex;
 	int					(*get)(struct s_value *);
 	int					(*set)(struct s_value *, int);
+	int					(*free)(struct s_value *);
 }	t_value;
+
+typedef struct s_fork
+{
+	int					id;
+	pthread_mutex_t		in_use_mutex;
+	t_value				in_use;
+}	t_fork;
 
 typedef struct s_sim
 {
 	t_v					philos;
+	t_v					forks;
 	t_v					msg;
 	pthread_mutex_t		msg_mutex;
 	bool				msg_lock;
@@ -62,6 +71,15 @@ typedef struct s_sim
 	t_value				someone_died;
 }	t_sim;
 
+enum e_state
+{
+	INIT,
+	THINKING,
+	EATING,
+	SLEEPING,
+	DIED,
+	FULL
+};
 typedef struct s_philo
 {
 	int					id;
@@ -70,6 +88,7 @@ typedef struct s_philo
 	pthread_mutex_t		t_to_die_mutex;
 	pthread_t			thread;
 	t_value				running;
+	int					state;
 	t_sim				*sim;
 }	t_philo;
 
@@ -86,12 +105,16 @@ int		philo_free(void *ptr);
 
 int		value_init(t_value *v);
 
-long	timestamp(void);
+long	timestamp(bool reset);
 void	spend_time(t_sim *s, int time);
 
 void	*ft_calloc(size_t count, size_t size);
 int		ft_strlen(char *str);
 void	ft_putint(int num);
 bool	errorlog(char *msg);
+
+
+bool	everbody_has_eaten(t_sim *sim);
+bool	someone_died(t_sim *sim);
 
 #endif

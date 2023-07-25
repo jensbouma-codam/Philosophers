@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 02:58:50 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 14:52:06 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	everbody_has_eaten(t_sim *sim)
 	id = 0;
 	if (sim->times_to_eat == -1)
 		return (false);
-	while (!sim->has_eaten.get(&sim->has_eaten) && id < sim->count)
+	while (id < sim->count)
 	{
 		philo = (t_philo *)sim->philos.get(&sim->philos, id);
 		if (philo->t_eaten.get(&philo->t_eaten) < sim->times_to_eat)
@@ -34,7 +34,7 @@ bool	everbody_has_eaten(t_sim *sim)
 	}
 	if (!sim->has_eaten.get(&sim->has_eaten))
 	{
-		msg_add(sim, -1, "Everbody has eaten!", true);
+		// msg_add(sim, -1, "Everbody has eaten!", true);
 		sim->has_eaten.set(&sim->has_eaten, true);
 	}
 	return (true);
@@ -46,16 +46,14 @@ bool	someone_died(t_sim *sim)
 	t_philo		*philo;
 
 	id = 0;
-	if (sim->someone_died.get(&sim->someone_died))
-		return (true);
 	while (id < sim->count)
 	{
 		philo = (t_philo *)sim->philos.get(&sim->philos, id);
 		if (pthread_mutex_lock(&philo->t_to_die_mutex) != 0)
 			return (errorlog("Failed to lock mutex"), false);
-		if (philo->t_to_die < timestamp())
+		if (philo->t_to_die < timestamp(false) && philo->running.get(&philo->running))
 		{
-			msg_add(sim, id, "Died!", true);
+			msg_add(sim, id, "died", true);
 			sim->someone_died.set(&sim->someone_died, true);
 			pthread_mutex_unlock(&philo->t_to_die_mutex);
 			return (true);
@@ -82,25 +80,74 @@ int	processcount(t_sim *sim)
 	}
 	return (count);
 }
+int fork_free(void *ptr)
+{
+	t_fork	*fork;
+
+	fork = (t_fork *)ptr;
+	fork->in_use.free(&fork->in_use);
+	free(fork);
+	return (SUCCESS);
+}
+
+int fork_create(t_sim *s)
+{
+	int			id;
+	t_fork		*fork;
+
+	id = 0;
+	while (id < s->count)
+	{
+		fork = ft_calloc(1, sizeof(t_fork));
+		if (!fork)
+			return (errorlog("Malloc failed"), FAILURE);
+		value_init(&fork->in_use);
+		fork->id = id;
+		pthread_mutex_init(&fork->in_use_mutex, NULL);
+		if (!s->forks.add(&s->forks, fork))
+			return (errorlog("Failed to add fork"), FAILURE);
+		id++;
+	}
+	return (SUCCESS);
+}
 
 int	simulation(t_sim *s)
 {
 	int		id;
+	t_philo	*p;
 
 	id = 0;
+	v_init(&s->forks, sizeof(t_fork), fork_free, NULL);
+	fork_create(s);
 	while (id < s->count)
+	{
 		philo_create(s, id++);
+		spend_time(s, 10);
+		// if (someone_died(s))
+		// 	break ;
+	}
+	timestamp(true);
 	while (msg_print(s))
 	{
 		if (someone_died(s))
 			break ;
 		if (everbody_has_eaten(s))
 			break ;
-		usleep(100);
+		spend_time(s, 2000);
 	}
-	while (processcount(s) > 0)
-		usleep(100);
 	msg_print(s);
+	while (processcount(s) > 0)
+		sleep(1);
+	while (--id >= 0)
+	{
+		p = (t_philo *)s->philos.get(&s->philos, id);
+		p->running.free(&p->running);
+		p->t_eaten.free(&p->t_eaten);
+		id--;
+	}
+	s->has_eaten.free(&s->has_eaten);
+	s->someone_died.free(&s->someone_died);
+	v_free(&s->forks);
 	if (pthread_mutex_destroy(&s->msg_mutex) != 0)
 		return (errorlog("Failed to destroy mutex"), FAILURE);
 	return (SUCCESS);

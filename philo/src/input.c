@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 03:03:33 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 14:08:07 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_sim	*input(int argc, char **argv, int i)
 	sim = input_argumenst(argc, argv, i);
 	if (!sim)
 		return (NULL);
-	if (sim->count > 200)
+	if (sim->count > 2000)
 		return (free(sim), errorlog("Max 200 philosophers!"), NULL);
 	return (sim);
 }
