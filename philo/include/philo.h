@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 14:50:35 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 18:11:57 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@
 #  define DEBUG 0
 # endif
 
-#  define ALLOW_ZERO 0
-
+# define ALLOW_ZERO 0
 
 # include "../lib/libvector/include/vector.h"
 
@@ -31,6 +30,7 @@
 # include <string.h>
 # include <stdio.h>
 # include <pthread.h>
+# include <sys/time.h>
 
 typedef struct s_msg
 {
@@ -38,7 +38,6 @@ typedef struct s_msg
 	long				timestamp;
 	char				*msg;
 }	t_msg;
-
 typedef struct s_value
 {
 	int					value;
@@ -54,7 +53,6 @@ typedef struct s_fork
 	pthread_mutex_t		in_use_mutex;
 	t_value				in_use;
 }	t_fork;
-
 typedef struct s_sim
 {
 	t_v					philos;
@@ -62,13 +60,15 @@ typedef struct s_sim
 	t_v					msg;
 	pthread_mutex_t		msg_mutex;
 	bool				msg_lock;
+	bool				start_lock;
+	pthread_mutex_t		start_time_mutex;
 	int					count;
 	long				t_to_die;
 	int					t_to_eat;
 	int					t_to_sleep;
 	int					times_to_eat;
 	t_value				has_eaten;
-	t_value				someone_died;
+	t_value				one_died;
 }	t_sim;
 
 enum e_state
@@ -92,7 +92,6 @@ typedef struct s_philo
 	t_sim				*sim;
 }	t_philo;
 
-
 t_sim	*input(int argc, char **argv, int i);
 
 int		msg_add(t_sim *sim, int id, char *msg, bool last);
@@ -105,7 +104,7 @@ int		philo_free(void *ptr);
 
 int		value_init(t_value *v);
 
-long	timestamp(bool reset);
+long	timestamp(t_sim *s);
 void	spend_time(t_sim *s, int time);
 
 void	*ft_calloc(size_t count, size_t size);
@@ -113,8 +112,12 @@ int		ft_strlen(char *str);
 void	ft_putint(int num);
 bool	errorlog(char *msg);
 
+int		fork_free(void *ptr);
+int		fork_create(t_sim *s);
 
 bool	everbody_has_eaten(t_sim *sim);
 bool	someone_died(t_sim *sim);
+
+int		simulation(t_sim *s);
 
 #endif
