@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 19:12:21 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 20:58:23 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	everbody_has_eaten(t_sim *sim)
 	while (id < sim->count)
 	{
 		philo = (t_philo *)sim->philos.get(&sim->philos, id);
-		if (philo->t_eaten.get(&philo->t_eaten) < sim->times_to_eat)
+		if (philo->x_eaten.get(&philo->x_eaten) < sim->times_to_eat)
 			return (false);
 		id++;
 	}
@@ -45,17 +45,17 @@ bool	someone_died(t_sim *sim)
 	while (id < sim->count)
 	{
 		philo = (t_philo *)sim->philos.get(&sim->philos, id);
-		if (pthread_mutex_lock(&philo->t_to_die_mutex) != 0)
+		if (pthread_mutex_lock(&philo->n_to_die_mutex) != 0)
 			return (errorlog("Failed to lock mutex"), false);
-		if (philo->t_to_die < timestamp(sim)
+		if (philo->n_to_die < timestamp(sim)
 			&& philo->running.get(&philo->running))
 		{
 			msg_add(sim, id, "died", true);
 			sim->one_died.set(&sim->one_died, true);
-			pthread_mutex_unlock(&philo->t_to_die_mutex);
+			pthread_mutex_unlock(&philo->n_to_die_mutex);
 			return (true);
 		}
-		pthread_mutex_unlock(&philo->t_to_die_mutex);
+		pthread_mutex_unlock(&philo->n_to_die_mutex);
 		id++;
 	}
 	return (false);
@@ -100,7 +100,8 @@ int	simulation(t_sim *s)
 
 	id = 0;
 	v_init(&s->forks, sizeof(t_fork), fork_free, NULL);
-	fork_create(s);
+	if (!fork_create(s))
+		return (s->forks.free(&s->forks), FAILURE);
 	while (id < s->count)
 		philo_create(s, id++);
 	pthread_mutex_lock(&s->start_time_mutex);
@@ -111,8 +112,7 @@ int	simulation(t_sim *s)
 	{
 		p = (t_philo *)s->philos.get(&s->philos, id);
 		p->running.free(&p->running);
-		p->t_eaten.free(&p->t_eaten);
-		id--;
+		p->x_eaten.free(&p->x_eaten);
 	}
 	s->has_eaten.free(&s->has_eaten);
 	s->one_died.free(&s->one_died);
