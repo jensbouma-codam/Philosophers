@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:26:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 12:52:27 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 18:01:30 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	value_init(t_value *v)
 	v->set = value_set;
 	v->get = value_get;
 	v->free = value_free;
-	if (pthread_mutex_init(&v->mutex, NULL)	!= 0)
+	if (pthread_mutex_init(&v->mutex, NULL) != 0)
 		return (errorlog("Failed to init mutex"), -1);
 	return (SUCCESS);
 }
