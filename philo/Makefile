@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/25 18:11:07 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/25 21:23:07 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,9 @@ BUILDDIR	= build
 TARGET		= $<
 
 # Compiler Settings
-CC 			:= cc
+CC 			:= gcc
 CFLAGS		+= -Werror -Wall -Wextra
-CFLAGS		+= -O3
+# CFLAGS		+= -O3
 
 # Libraries
 LIBDIR		= lib
@@ -110,9 +110,9 @@ fclean: clean
 
 re: fclean all
 
-debug: CFLAGS += -g -fsanitize=address -D DEBUG=1
+debug: CFLAGS += -D DEBUG=1 -g -fsanitize=address
 debug: re all
-	@printf "$(RED)Compiled in debug / fsanitize=adress mode!!!$(RESET)\n\n"
+	@printf "$(RED)Compiled in debug / fsanitize=address mode!!!$(RESET)\n\n"
 
 leaks: CFLAGS += -D DEBUG=2 -g
 leaks: re all

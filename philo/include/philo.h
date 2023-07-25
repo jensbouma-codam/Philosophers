@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 18:11:57 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 21:12:53 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ typedef struct s_fork
 {
 	int					id;
 	pthread_mutex_t		in_use_mutex;
-	t_value				in_use;
 }	t_fork;
 typedef struct s_sim
 {
@@ -59,13 +58,12 @@ typedef struct s_sim
 	t_v					forks;
 	t_v					msg;
 	pthread_mutex_t		msg_mutex;
-	bool				msg_lock;
 	bool				start_lock;
 	pthread_mutex_t		start_time_mutex;
 	int					count;
-	long				t_to_die;
-	int					t_to_eat;
-	int					t_to_sleep;
+	long				n_to_die;
+	int					n_to_eat;
+	int					n_to_sleep;
 	int					times_to_eat;
 	t_value				has_eaten;
 	t_value				one_died;
@@ -83,9 +81,9 @@ enum e_state
 typedef struct s_philo
 {
 	int					id;
-	t_value				t_eaten;
-	long				t_to_die;
-	pthread_mutex_t		t_to_die_mutex;
+	t_value				x_eaten;
+	long				n_to_die;
+	pthread_mutex_t		n_to_die_mutex;
 	pthread_t			thread;
 	t_value				running;
 	int					state;
