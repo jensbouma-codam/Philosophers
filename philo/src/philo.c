@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 15:26:49 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 15:30:12 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,15 @@ void	*philo_proc(void *ptr)
 		// 	if (p->id % 2 == 0)
 		// 		usleep(1);
 		// }
+		if (p->state != THINKING)
+		{
+			msg_add(s, p->id, "is thinking", false);
+			p->state = THINKING;
+			// if (p->id % 2 == 0)
+			// 	spend_time(s, 2000);
+			// else
+			// 	spend_time(s, 1000);
+		}
 		if (p->id % 2 == 0 && !s->someone_died.get(&s->someone_died))
 		{
 			spend_time(s, 1000);
