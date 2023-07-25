@@ -4,3 +4,4 @@ philo/build/src/input.o
 errors_log
 philo/philo
 philo/output.txt
+.DS_Store
