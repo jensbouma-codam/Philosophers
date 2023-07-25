@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 15:05:36 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 15:26:49 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	*philo_proc(void *ptr)
 	p->running.set(&p->running, true);
 	while (!s->has_eaten.get(&s->has_eaten) && !s->someone_died.get(&s->someone_died))
 	{
-		if (timestamp(false) == -1)
+		if (timestamp(false) == -1 || fork_l->id == fork_r->id)
 			continue;
 		// {
 		// 	usleep(1000);
@@ -51,13 +51,13 @@ void	*philo_proc(void *ptr)
 		// 	if (p->id % 2 == 0)
 		// 		usleep(1);
 		// }
-		if (p->id % 2 == 0)
+		if (p->id % 2 == 0 && !s->someone_died.get(&s->someone_died))
 		{
-			usleep(1);
+			spend_time(s, 1000);
 			pthread_mutex_lock(&fork_r->in_use_mutex);
 			pthread_mutex_lock(&fork_l->in_use_mutex);
 		}
-		else
+		else if (!s->someone_died.get(&s->someone_died))
 		{
 			pthread_mutex_lock(&fork_l->in_use_mutex);
 			pthread_mutex_lock(&fork_r->in_use_mutex);
@@ -103,12 +103,12 @@ void	*philo_proc(void *ptr)
 		{
 			msg_add(s, p->id, "is thinking", false);
 			p->state = THINKING;
-			if (p->id % 2 == 0)
-				spend_time(s, 200);
-			else
-				spend_time(s, 100);
-			// spend_time(s, s->count * 200);
+			// if (p->id % 2 == 0)
+			// 	spend_time(s, 2000);
+			// else
+			// 	spend_time(s, 1000);
 		}
+		// spend_time(s, s->count * 10);
 	}
 	p->running.set(&p->running, false);
 	return (NULL);
