@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 16:41:45 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 21:22:43 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	printmsg(struct s_msg *msg)
 {
-	if (DEBUG > 1)
+	if (DEBUG > 0)
 		ft_putint(msg->timestamp);
 	else
 		ft_putint(msg->timestamp / 1000);
@@ -57,18 +57,22 @@ int	msg_free(void *ptr)
 int	msg_add(t_sim *sim, int id, char *msg, bool last)
 {
 	t_msg		*new;
+	static bool	lock = false;
 
 	pthread_mutex_lock(&sim->msg_mutex);
-	if (sim->msg_lock && id != -1)
+	if (lock && id != -1)
 		return (pthread_mutex_unlock(&sim->msg_mutex), SUCCESS);
 	new = ft_calloc(1, sizeof(t_msg));
 	if (!new)
+	{
+		pthread_mutex_unlock(&sim->msg_mutex);
 		return (errorlog("Malloc failed"), FAILURE);
+	}
 	new->timestamp = timestamp(sim);
 	new->msg = msg;
 	new->id = id;
 	if (last)
-		sim->msg_lock = true;
+		lock = true;
 	if (sim->msg.add(&sim->msg, (void *)new) == FAILURE)
 		return (free(new), pthread_mutex_unlock(&sim->msg_mutex), FAILURE);
 	pthread_mutex_unlock(&sim->msg_mutex);
