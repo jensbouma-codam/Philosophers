@@ -6,15 +6,16 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 21:22:06 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 21:40:02 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	print_mem(void)
+static void	print_mem(void)
 {
-	system("leaks philo");
+	if (DEBUG == 2)
+		system("leaks philo");
 }
 
 int	main(int argc, char **argv)

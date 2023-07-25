@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 20:58:23 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 21:37:12 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	simulation_monitor(t_sim *s)
 	}
 	msg_print(s);
 	while (processcount(s) > 0)
-		sleep(1);
+		usleep(10000);
 }
 
 int	simulation(t_sim *s)
