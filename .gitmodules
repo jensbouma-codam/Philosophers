@@ -1,0 +1,3 @@
+[submodule "philo/lib/libvector"]
+	path = philo/lib/libvector
+	url = https://github.com/jensbouma-codam/LibVector.git
