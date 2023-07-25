@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 02:23:07 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 03:03:33 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static int	ft_strtoi(const char *str)
 		nbr = (nbr * 10) + (str[i] - '0');
 		++i;
 	}
-	// if (nbr == 0)
-	// 	return (errorlog("Program doenst accept 0 as agrument"), -1);
+	if (nbr == 0 && ALLOW_ZERO == 0)
+		return (errorlog("Program does not accept 0 as agrument"), -1);
 	return (nbr);
 }
 

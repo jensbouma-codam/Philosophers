@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 19:30:26 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 02:28:08 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 02:56:07 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	spend_time(t_sim *s, int time)
 {
 	const long	start = timestamp();
 
-	while (!s->everbody_has_eaten.get(&s->everbody_has_eaten)
+	while (!s->has_eaten.get(&s->has_eaten)
 		&& !s->someone_died.get(&s->someone_died) && timestamp() < start + time)
 		usleep(100);
 }
