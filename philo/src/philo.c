@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 18:01:14 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 18:44:07 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	philo_eat(t_philo *p, t_sim *s, t_fork *fork_l, t_fork *fork_r)
 	pthread_mutex_unlock(&p->t_to_die_mutex);
 	p->t_eaten.set(&p->t_eaten, p->t_eaten.get(&p->t_eaten) + 1);
 	spend_time(s, s->t_to_eat);
+	msg_add(s, p->id, "is sleeping", false);
 	pthread_mutex_unlock(&fork_r->in_use_mutex);
 	pthread_mutex_unlock(&fork_l->in_use_mutex);
 }
@@ -78,7 +79,6 @@ void	*philo_proc(void *ptr)
 			continue ;
 		philo_think(p, s);
 		philo_eat(p, s, fork_l, fork_r);
-		msg_add(s, p->id, "is sleeping", false);
 		spend_time(s, s->t_to_sleep);
 	}
 	p->running.set(&p->running, false);
