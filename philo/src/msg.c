@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 14:11:14 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 16:41:45 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	msg_add(t_sim *sim, int id, char *msg, bool last)
 	new = ft_calloc(1, sizeof(t_msg));
 	if (!new)
 		return (errorlog("Malloc failed"), FAILURE);
-	new->timestamp = timestamp(false);
+	new->timestamp = timestamp(sim);
 	new->msg = msg;
 	new->id = id;
 	if (last)

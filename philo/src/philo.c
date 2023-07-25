@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 15:30:12 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 18:01:14 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,39 @@ int	philo_free(void *ptr)
 		errorlog("Failed to detach monitor thread");
 	free(p);
 	return (SUCCESS);
+}
+
+void	philo_think(t_philo *p, t_sim *s)
+{
+	if (p->state != THINKING)
+		msg_add(s, p->id, "is thinking", false);
+	p->state = THINKING;
+}
+
+void	philo_eat(t_philo *p, t_sim *s, t_fork *fork_l, t_fork *fork_r)
+{
+	if (p->id % 2 == 0)
+	{
+		usleep(1000);
+		pthread_mutex_lock(&fork_r->in_use_mutex);
+		pthread_mutex_lock(&fork_l->in_use_mutex);
+	}
+	else
+	{	
+		pthread_mutex_lock(&fork_l->in_use_mutex);
+		pthread_mutex_lock(&fork_r->in_use_mutex);
+	}
+	msg_add(s, p->id, "has taken a fork", false);
+	msg_add(s, p->id, "has taken a fork", false);
+	msg_add(s, p->id, "is eating", false);
+	p->state = EATING;
+	pthread_mutex_lock(&p->t_to_die_mutex);
+	p->t_to_die = timestamp(s) + s->t_to_die;
+	pthread_mutex_unlock(&p->t_to_die_mutex);
+	p->t_eaten.set(&p->t_eaten, p->t_eaten.get(&p->t_eaten) + 1);
+	spend_time(s, s->t_to_eat);
+	pthread_mutex_unlock(&fork_r->in_use_mutex);
+	pthread_mutex_unlock(&fork_l->in_use_mutex);
 }
 
 void	*philo_proc(void *ptr)
@@ -39,85 +72,14 @@ void	*philo_proc(void *ptr)
 	else
 		fork_r = (t_fork *)s->forks.get(&s->forks, (p->id + 1));
 	p->running.set(&p->running, true);
-	while (!s->has_eaten.get(&s->has_eaten) && !s->someone_died.get(&s->someone_died))
+	while (!s->has_eaten.get(&s->has_eaten) && !s->one_died.get(&s->one_died))
 	{
-		if (timestamp(false) == -1 || fork_l->id == fork_r->id)
-			continue;
-		// {
-		// 	usleep(1000);
-		// }
-		// if (timestamp(false) == 0)
-		// {
-		// 	if (p->id % 2 == 0)
-		// 		usleep(1);
-		// }
-		if (p->state != THINKING)
-		{
-			msg_add(s, p->id, "is thinking", false);
-			p->state = THINKING;
-			// if (p->id % 2 == 0)
-			// 	spend_time(s, 2000);
-			// else
-			// 	spend_time(s, 1000);
-		}
-		if (p->id % 2 == 0 && !s->someone_died.get(&s->someone_died))
-		{
-			spend_time(s, 1000);
-			pthread_mutex_lock(&fork_r->in_use_mutex);
-			pthread_mutex_lock(&fork_l->in_use_mutex);
-		}
-		else if (!s->someone_died.get(&s->someone_died))
-		{
-			pthread_mutex_lock(&fork_l->in_use_mutex);
-			pthread_mutex_lock(&fork_r->in_use_mutex);
-		}
-		msg_add(s, p->id, "has taken a fork", false);
-		msg_add(s, p->id, "has taken a fork", false);
-		msg_add(s, p->id, "is eating", false);
-		p->state = EATING;
-		pthread_mutex_lock(&p->t_to_die_mutex);
-		p->t_to_die = timestamp(false) + s->t_to_die + 1000;
-		pthread_mutex_unlock(&p->t_to_die_mutex);
-		p->t_eaten.set(&p->t_eaten, p->t_eaten.get(&p->t_eaten) + 1);
-		spend_time(s, s->t_to_eat);
-		pthread_mutex_unlock(&fork_r->in_use_mutex);
-		pthread_mutex_unlock(&fork_l->in_use_mutex);
+		if (timestamp(s) == -1 || fork_l->id == fork_r->id)
+			continue ;
+		philo_think(p, s);
+		philo_eat(p, s, fork_l, fork_r);
 		msg_add(s, p->id, "is sleeping", false);
 		spend_time(s, s->t_to_sleep);
-		// if (fork_l->in_use.get(&fork_r->in_use) == false && fork_l->id != fork_r->id)
-		// {
-		// 	fork_l->in_use.set(&fork_r->in_use, true);
-		// 	if (fork_r->in_use.get(&fork_l->in_use) == false)
-		// 	{
-		// 		msg_add(s, p->id, "has taken a fork", false);
-		// 		fork_r->in_use.set(&fork_l->in_use, true);	
-		// 		msg_add(s, p->id, "has taken a fork", false);
-		// 		msg_add(s, p->id, "is eating", false);
-		// 		p->state = EATING;
-		// 		pthread_mutex_lock(&p->t_to_die_mutex);
-		// 		p->t_to_die = timestamp(false) + s->t_to_die;
-		// 		pthread_mutex_unlock(&p->t_to_die_mutex);
-		// 		p->t_eaten.set(&p->t_eaten, p->t_eaten.get(&p->t_eaten) + 1);
-		// 		spend_time(s, s->t_to_eat);
-		// 		fork_r->in_use.set(&fork_r->in_use, false);
-		// 		fork_l->in_use.set(&fork_l->in_use, false);
-		// 		msg_add(s, p->id, "is sleeping", false);
-		// 		spend_time(s, s->t_to_sleep);
-		// 	}
-		// 	else
-		// 		fork_l->in_use.set(&fork_l->in_use, false);
-		// }
-		// spend_time(s, (s->t_to_die - timestamp(false)) / 10);
-		if (p->state != THINKING)
-		{
-			msg_add(s, p->id, "is thinking", false);
-			p->state = THINKING;
-			// if (p->id % 2 == 0)
-			// 	spend_time(s, 2000);
-			// else
-			// 	spend_time(s, 1000);
-		}
-		// spend_time(s, s->count * 10);
 	}
 	p->running.set(&p->running, false);
 	return (NULL);
