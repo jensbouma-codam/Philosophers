@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 18:04:09 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 21:22:06 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,14 @@ int	main(int argc, char **argv)
 	s = input(argc, argv, 0);
 	if (!s)
 		return (EXIT_FAILURE);
+	s->start_lock = false;
 	if (!v_init(&s->msg, sizeof(t_msg), msg_free, NULL)
 		|| !v_init(&s->philos, sizeof(t_philo), philo_free, NULL))
 		return (free(s), errorlog("Malloc failed"));
-	value_init(&s->has_eaten);
-	value_init(&s->one_died);
-	s->msg_lock = false;
-	s->start_lock = false;
-	pthread_mutex_init(&s->start_time_mutex, NULL);
-	pthread_mutex_init(&s->msg_mutex, NULL);
+	if (!value_init(&s->has_eaten) || !value_init(&s->one_died)
+		|| pthread_mutex_init(&s->start_time_mutex, NULL) != 0
+		|| pthread_mutex_init(&s->msg_mutex, NULL) != 0)
+		return (free(s), errorlog("Failed to init program"));
 	if (!simulation(s))
 		return (v_free(&s->philos), v_free(&s->msg), free(s), EXIT_FAILURE);
 	return (v_free(&s->philos), v_free(&s->msg), free(s), EXIT_SUCCESS);

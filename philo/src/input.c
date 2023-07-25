@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/25 14:08:07 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 20:19:39 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ static t_sim	*input_argumenst(int argc, char **argv, int i)
 		if (i == 1)
 			sim->count = n;
 		else if (i == 2)
-			sim->t_to_die = (n * 1000);
+			sim->n_to_die = (n * 1000);
 		else if (i == 3)
-			sim->t_to_eat = (n * 1000);
+			sim->n_to_eat = (n * 1000);
 		else if (i == 4)
-			sim->t_to_sleep = (n * 1000);
+			sim->n_to_sleep = (n * 1000);
 		else if (i == 5)
 			sim->times_to_eat = n;
 	}
