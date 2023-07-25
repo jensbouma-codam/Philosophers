@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/11 18:24:01 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/25 02:23:07 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static bool	isdigit(int c)
 	return (0);
 }
 
-static int32_t	mystrtoull(const char *str)
+static int	ft_strtoi(const char *str)
 {
 	int			i;
 	uint64_t	nbr;
@@ -39,48 +39,49 @@ static int32_t	mystrtoull(const char *str)
 		nbr = (nbr * 10) + (str[i] - '0');
 		++i;
 	}
+	// if (nbr == 0)
+	// 	return (errorlog("Program doenst accept 0 as agrument"), -1);
 	return (nbr);
 }
 
-/**
- * @brief Get 4 or 5 input arguments from the command line
- * and process them into a struct s_simulation.
- * 
- * The first argument is the number of philosophers.
- * The second argument is the time to die in milliseconds.
- * The third argument is the time to eat in milliseconds.
- * The fourth argument is the time to sleep in milliseconds.
- * The fifth argument is the number of times each philosopher
- * must eat before the simulation stops.
- * 
- * @param argc 
- * @param argv 
- * @return struct s_simulation* 
- */
-struct s_simulation	*input(int argc, char **argv, int i)
+static t_sim	*input_argumenst(int argc, char **argv, int i)
 {
-	int32_t				n;
-	struct s_simulation	*sim;
+	t_sim	*sim;
+	int		n;
 
-	sim = ft_calloc(1, sizeof(struct s_simulation));
+	sim = ft_calloc(1, sizeof(t_sim));
 	if (!sim)
 		return (errorlog("Malloc failed"), NULL);
 	sim->times_to_eat = -1;
 	while (++i < argc)
 	{
-		n = mystrtoull(argv[i]);
-		if (n <= 0)
-			return (free(sim), errorlog("Program doesn't accept zero's"), NULL);
+		n = ft_strtoi(argv[i]);
+		if (n < 0)
+			return (free(sim), NULL);
 		if (i == 1)
-			sim->philosophers = n;
+			sim->count = n;
 		else if (i == 2)
-			sim->time_to_die = (n * 1000);
+			sim->t_to_die = (n * 1000);
 		else if (i == 3)
-			sim->time_to_eat = (n * 1000);
+			sim->t_to_eat = (n * 1000);
 		else if (i == 4)
-			sim->time_to_sleep = (n * 1000);
+			sim->t_to_sleep = (n * 1000);
 		else if (i == 5)
 			sim->times_to_eat = n;
 	}
+	return (sim);
+}
+
+t_sim	*input(int argc, char **argv, int i)
+{
+	t_sim	*sim;
+
+	if (argc < 5 || argc > 6)
+		return (errorlog("Wrong number of arguments"), NULL);
+	sim = input_argumenst(argc, argv, i);
+	if (!sim)
+		return (NULL);
+	if (sim->count > 200)
+		return (free(sim), errorlog("Max 200 philosophers!"), NULL);
 	return (sim);
 }

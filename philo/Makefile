@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/10 12:31:03 by jbouma        ########   odam.nl          #
+#    Updated: 2023/07/25 01:21:58 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,24 +20,33 @@ TARGET		= $<
 # Compiler Settings
 CC 			:= cc
 CFLAGS		+= -Werror -Wall -Wextra
+# CFLAGS		+= -fsanitize=thread -g
 # CFLAGS		+= -g
 # CFLAGS		+= -O3 -flto -march=native -mtune=native
 
+
+# Libraries
+LIBDIR		= lib
+LIBS		= libvector
+
+LIBS_A		= $(addsuffix /*.a, $(addprefix $(LIBDIR)/, $(LIBS)))
+LIBS_INC	= $(addsuffix /include, $(addprefix $(LIBDIR)/, $(LIBS)))
+
 # Headers
-INC 		= -I include 
+INC 		= -I include -I$(LIBS_INC)
+
 
 # Sources
 SRCDIR		= 	src
 FILES		= 	input.c			\
 				main.c			\
+				msg.c			\
 				philo.c			\
-				print.c			\
-				watch.c			\
-				table.c			\
 				tools/error.c	\
-				tools/debug.c	\
 				tools/mem.c		\
 				tools/time.c	\
+				tools/value.c	\
+				tools/string.c
 	
 SOURCES		=	${addprefix $(SRCDIR)/, $(FILES)}
 
@@ -64,7 +73,7 @@ P_KO			= $(P) "$@${RED}" "Norm KO" "${RESET}"
 # Rules
 all: $(NAME)
 	@if [ ! -d $(dir $(TARGET)) ]; then mkdir $(dir $(TARGET)); fi
-	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBARIES_AFILES) $(GLFW) -o $(TARGET)	\
+	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBS_A) $(GLFW) -o $(TARGET)	\
 		&& ($(P) "Executable $(GREEN)" "$< Created $(RESET)" && exit 0)						\
 		|| ($(P) "Executable $(RED)" "$< Compile error $(RESET)" && exit 1)
 	@$(P) "Flags $(YELLOW)" "$(CFLAGS) $(RESET)"
@@ -77,7 +86,16 @@ $(BUILDDIR)/%.o:%.c
 		&& $(P) "Build${GREEN}" "$(notdir $<)${RESET}" 						\
 		|| $(P) "Build${RED}" "$(notdir $<)${RESET}"
 
-$(NAME): $(OBJECTS)
+$(LIBS):
+	@mkdir -p $(BUILDDIR)
+	@git submodule update --init 2>&1				\
+		&& $(P) "Submodule${GREEN}" "$@$(RESET)"	\
+		|| $(P) "Submodule${RED}" "$@$(RESET)"
+	@make -C $(LIBDIR)/$@ 2>&1 > /dev/null			\
+		&& $(P) "Build${GREEN}" "$@$(RESET)"		\
+		|| $(P) "Build${RED}" "$@$(RESET)"	
+
+$(NAME): $(LIBS) $(OBJECTS)
 	@make norm 2> /dev/null && $(P_OK) || { $(P_KO);}
 
 clean:
@@ -86,6 +104,8 @@ clean:
 
 fclean: clean
 	@rm -rf $(LIBDIR)/*/build
+	@rm -rf $(LIBDIR)/*.a
+
 	@rm -f $(NAME)
 	@if [ "./" != "$(dir $(TARGET))" ]; then rm -rf $(dir $(TARGET)); fi
 

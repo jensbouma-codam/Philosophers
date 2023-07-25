@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/24 15:45:33 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 02:33:28 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # ifndef DEBUG
 #  define DEBUG 0
 # endif
+
+# include "../lib/libvector/include/vector.h"
 
 # include <stdbool.h>
 # include <stddef.h>
@@ -27,75 +29,69 @@
 # include <stdio.h>
 # include <pthread.h>
 
-struct s_msg
+typedef struct s_msg
 {
-	long			timestamp;
-	uint32_t		id;
-	char			*msg;
-	struct s_msg	*next;
-};
+	int					id;
+	long				timestamp;
+	char				*msg;
+}	t_msg;
 
-struct s_msg_queue
+typedef struct s_value
 {
-	pthread_mutex_t	mutex;
-	struct s_msg	*msg;
-	struct s_msg	*last;
-};
+	int					value;
+	pthread_mutex_t		mutex;
+	int					(*get)(struct s_value *);
+	int					(*set)(struct s_value *, int);
+}	t_value;
 
-struct s_fork
+typedef struct s_sim
 {
-	pthread_mutex_t	mutex;
-	bool			in_use;
-};
+	t_v					philos;
+	t_v					msg;
+	pthread_mutex_t		msg_mutex;
+	bool				msg_lock;
+	pthread_mutex_t		mutex;
+	int					count;
+	long				t_to_die;
+	int					t_to_eat;
+	int					t_to_sleep;
+	int					times_to_eat;
+	t_value				proc;
+	pthread_t			monitor;
+	t_value				everbody_has_eaten;
+	t_value				someone_died;
+}	t_sim;
 
-struct s_table
+typedef struct s_philo
 {
-	pthread_t		philosopher;
-	pthread_mutex_t	mutex;
-	uint32_t		id;
-	struct s_fork	*l_fork;
-	struct s_fork	*r_fork;
-	long			dead;
-	int32_t			times_eaten;
-	bool			seat_taken;
-	bool			is_eating;
-	struct s_table	*next;
-	struct s_table	*prev;
-};
+	int					id;
+	t_value				t_eaten;
+	long				time_to_die;
+	pthread_mutex_t		time_to_die_mutex;
+	pthread_t			thread;
+	t_value				running;
+	t_sim				*sim;
+}	t_philo;
 
-struct s_simulation
-{
-	long				start;
-	uint32_t			philosophers;
-	uint32_t			time_to_die;
-	uint32_t			time_to_eat;
-	uint32_t			time_to_sleep;
-	int32_t				times_to_eat;
-	struct s_msg_queue	*msg_queue;
-	struct s_table		*table;
-};
+bool	errorlog(char *msg);
 
-struct s_simulation	*input(int argc, char **argv, int i);
+t_sim	*input(int argc, char **argv, int i);
 
-void				*philo_lifecycle(void *arg);
+long	timestamp(void);
+void	spend_time(t_sim *s, int time);
 
-struct s_table		*table_prepare(int i);
-// void				table_add_seats(struct s_simulation *sim);
-// void				table_add_mutexes(struct s_simulation *sim);
-void				philo_join_table(struct s_simulation *sim);	
+void	*ft_calloc(size_t count, size_t size);
+int		ft_strlen(char *str);
+void	ft_putint(int num);
 
-int					msg_print(struct s_msg_queue *p);
-bool				msg_add(struct s_msg_queue *p, uint32_t id, char *msg);
-struct	s_msg_queue	*msg_queue_init(struct s_simulation *sim);
+int		msg_free(void *ptr);
+int		msg_add(t_sim *sim, int id, char *msg, bool last);
+int		msg_print(t_sim *sim);
 
-bool				watch_them_die(struct s_simulation *sim);
+int		philo_free(void *ptr);
+void	*philo_proc(void *ptr);
+int		philo_create(t_sim *s, int id);
 
-long				timestamp(void);	
-
-bool				errorlog(char *msg);	
-
-void				debug(const char *s, ...);	
-
-void				*ft_calloc(size_t count, size_t size);
+int		value_init(t_value *v);
 
 #endif
