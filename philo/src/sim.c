@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 19:10:01 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 19:12:21 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ bool	everbody_has_eaten(t_sim *sim)
 	}
 	if (!sim->has_eaten.get(&sim->has_eaten))
 	{
-		msg_add(sim, -1, "All philosophers have eaten enough", true);
+		if (DEBUG)
+			msg_add(sim, -1, "All philosophers have eaten enough", true);
 		sim->has_eaten.set(&sim->has_eaten, true);
 	}
 	return (true);
