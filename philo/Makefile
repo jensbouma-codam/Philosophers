@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/25 01:21:58 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/25 13:31:43 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ CC 			:= cc
 CFLAGS		+= -Werror -Wall -Wextra
 # CFLAGS		+= -fsanitize=thread -g
 # CFLAGS		+= -g
+CFLAGS		+= -O3
 # CFLAGS		+= -O3 -flto -march=native -mtune=native
 
 
