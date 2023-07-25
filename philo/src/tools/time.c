@@ -6,29 +6,35 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 19:30:26 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 02:56:07 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/25 15:01:13 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <sys/time.h>
 
-long	timestamp(void)
+long	timestamp(bool reset)
 {
-	static long		start = 0;
+	static long		start = -1;
 	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	if (start == 0)
+	if (start != -1)
+	{
+		gettimeofday(&time, NULL);
+		return ((time.tv_sec * 1000000 + time.tv_usec) - start);
+	}
+	if (reset)
+	{
+		gettimeofday(&time, NULL);
 		start = (time.tv_sec * 1000000 + time.tv_usec);
-	return ((time.tv_sec * 1000000 + time.tv_usec) - start);
+	}
+	return (-1);
 }
 
 void	spend_time(t_sim *s, int time)
 {
-	const long	start = timestamp();
+	const long	start = timestamp(false);
 
-	while (!s->has_eaten.get(&s->has_eaten)
-		&& !s->someone_died.get(&s->someone_died) && timestamp() < start + time)
+	while (start > 0 && !s->has_eaten.get(&s->has_eaten)
+		&& !s->someone_died.get(&s->someone_died) && timestamp(false) < (start + time))
 		usleep(100);
 }
