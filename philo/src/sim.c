@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 21:37:12 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/26 15:03:25 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,10 @@ int	simulation(t_sim *s)
 	if (!fork_create(s))
 		return (s->forks.free(&s->forks), FAILURE);
 	while (id < s->count)
-		philo_create(s, id++);
-	pthread_mutex_lock(&s->start_time_mutex);
-	s->start_lock = true;
-	pthread_mutex_unlock(&s->start_time_mutex);
+		if (!philo_create(s, id++))
+			return (s->forks.free(&s->forks), FAILURE);
+	timestamp(s);
+	pthread_mutex_unlock(&s->start_lock_mutex);
 	simulation_monitor(s);
 	while (--id >= 0)
 	{

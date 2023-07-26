@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 20:49:25 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/26 14:57:57 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	philo_free(void *ptr)
 
 	p = (t_philo *)ptr;
 	if (pthread_detach(p->thread) != 0)
-		errorlog("Failed to detach monitor thread");
+		errorlog("Failed to detach thread");
 	free(p);
 	return (SUCCESS);
 }
@@ -39,7 +39,7 @@ void	philo_eat(t_philo *p, t_sim *s, t_fork *fork_l, t_fork *fork_r)
 		pthread_mutex_lock(&fork_l->in_use_mutex);
 	}
 	else
-	{	
+	{
 		pthread_mutex_lock(&fork_l->in_use_mutex);
 		pthread_mutex_lock(&fork_r->in_use_mutex);
 	}
@@ -61,24 +61,24 @@ void	*philo_proc(void *ptr)
 {
 	t_philo	*p;
 	t_sim	*s;
-	t_fork	*fork_l;
 	t_fork	*fork_r;
 
 	p = (t_philo *)ptr;
 	s = p->sim;
 	p->state = INIT;
-	fork_l = (t_fork *)s->forks.get(&s->forks, p->id);
 	if (p->id + 1 == s->count)
 		fork_r = (t_fork *)s->forks.get(&s->forks, 0);
 	else
 		fork_r = (t_fork *)s->forks.get(&s->forks, (p->id + 1));
 	p->running.set(&p->running, true);
+	pthread_mutex_lock(&s->start_lock_mutex);
+	pthread_mutex_unlock(&s->start_lock_mutex);
 	while (!s->has_eaten.get(&s->has_eaten) && !s->one_died.get(&s->one_died))
 	{
-		if (timestamp(s) == -1 || fork_l->id == fork_r->id)
+		if (((t_fork *)s->forks.get(&s->forks, p->id))->id == fork_r->id)
 			continue ;
 		philo_think(p, s);
-		philo_eat(p, s, fork_l, fork_r);
+		philo_eat(p, s, (t_fork *)s->forks.get(&s->forks, p->id), fork_r);
 		spend_time(s, s->n_to_sleep);
 	}
 	p->running.set(&p->running, false);
@@ -102,6 +102,6 @@ int	philo_create(t_sim *s, int id)
 	if (!value_init(&p->x_eaten) || !value_init(&p->running))
 		return (errorlog("Failed to init value"), FAILURE);
 	if (pthread_create(&p->thread, NULL, philo_proc, p) != 0)
-		return (errorlog("Failed to create monitor thread"), FAILURE);
+		return (errorlog("Failed to create thread"), FAILURE);
 	return (SUCCESS);
 }
