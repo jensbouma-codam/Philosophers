@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/26 15:13:07 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/26 15:50:57 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # endif
 
 # define ALLOW_ZERO 0
-# define PROCESS_LIMIT 20001
+# define PROCESS_LIMIT 3000
 
 # include "../lib/libvector/include/vector.h"
 
@@ -63,10 +63,10 @@ typedef struct s_sim
 	pthread_mutex_t		start_lock_mutex;
 	pthread_mutex_t		start_time_mutex;
 	int					count;
-	long				n_to_die;
+	int					n_to_die;
 	int					n_to_eat;
 	int					n_to_sleep;
-	int					times_to_eat;
+	long				times_to_eat;
 	t_value				has_eaten;
 	t_value				one_died;
 }	t_sim;
@@ -105,7 +105,7 @@ int		philo_free(void *ptr);
 int		value_init(t_value *v);
 
 long	timestamp(t_sim *sim);
-void	spend_time(t_sim *sim, int time);
+void	spend_time(t_sim *sim, long time);
 
 void	*ft_calloc(size_t count, size_t size);
 int		ft_strlen(char *str);

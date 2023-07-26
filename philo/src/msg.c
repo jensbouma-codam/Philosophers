@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/26 14:57:05 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/26 15:54:14 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	printmsg(struct s_msg *msg)
 	if (DEBUG > 0)
 		ft_putint(msg->timestamp);
 	else
-		ft_putint(msg->timestamp / 1000);
+		ft_putint(msg->timestamp);
 	write(1, " ", 1);
 	if (msg->id != -1)
 	{

@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/26 15:03:25 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/26 19:29:23 by jbouma        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	simulation_monitor(t_sim *s)
 			break ;
 		if (everbody_has_eaten(s))
 			break ;
-		spend_time(s, 2000);
+		usleep(1000);
 	}
 	msg_print(s);
 	while (processcount(s) > 0)
