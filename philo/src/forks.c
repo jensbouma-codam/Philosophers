@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:02:16 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/25 20:57:48 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/27 01:42:05 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 int	fork_free(void *ptr)
 {
+	t_fork	*fork;
+
+	fork = (t_fork *)ptr;
+	if (pthread_mutex_destroy(&fork->in_use_mutex) != 0)
+		errorlog("Failed to destroy in_use_mutex mutex");
 	free(ptr);
 	return (SUCCESS);
 }
