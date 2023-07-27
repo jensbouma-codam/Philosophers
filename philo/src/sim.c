@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/27 01:53:01 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/27 02:14:44 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,14 +103,15 @@ int	simulation(t_sim *s)
 	t_philo			*p;
 
 	id = 0;
-	v_init(&s->forks, sizeof(t_fork), fork_free, NULL);
-	value_init(&s->start_lock);
+	if (!v_init(&s->forks, sizeof(t_fork), fork_free, NULL)
+		|| !value_init(&s->start_lock))
+		return (errorlog("Malloc failed"), FAILURE);
 	s->start_lock.set(&s->start_lock, true);
 	if (!fork_create(s))
-		return (s->forks.free(&s->forks), FAILURE);
+		return (v_free(&s->forks), FAILURE);
 	while (id < s->count)
 		if (!philo_create(s, id++))
-			return (s->forks.free(&s->forks), FAILURE);
+			return (v_free(&s->forks), FAILURE);
 	simulation_run(s);
 	while (id--)
 	{
@@ -120,7 +121,5 @@ int	simulation(t_sim *s)
 	}
 	s->end_sim.free(&s->end_sim);
 	v_free(&s->forks);
-	if (pthread_mutex_destroy(&s->msg_mutex) != 0)
-		return (errorlog("Failed to destroy mutex"), FAILURE);
 	return (SUCCESS);
 }
