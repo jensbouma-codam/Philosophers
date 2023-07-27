@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/27 02:51:09 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/27 02:53:29 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,10 +39,8 @@ CC 			:= gcc
 CFLAGS		+= -Werror -Wall -Wextra
 CFLAGS		+= -O3
 
-# Sources
-SOURCES		= ${addprefix $(SRCDIR)/, $(FILES)}
-
 # Dynamic files
+SOURCES		= ${addprefix $(SRCDIR)/, $(FILES)}
 LIBS_A		= $(addsuffix /*.a, $(addprefix $(LIBDIR)/, $(LIBS)))
 LIBS_INC	= $(addsuffix /include, $(addprefix $(LIBDIR)/, $(LIBS)))
 
