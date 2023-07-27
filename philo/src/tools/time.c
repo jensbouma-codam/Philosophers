@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 19:30:26 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/27 01:43:21 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/27 11:11:08 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,5 @@ void	spend_time(t_sim *s, long time)
 	const long	start = timestamp(s);
 
 	while (timestamp(s) < (start + time))
-		usleep(400);
+		usleep(20 * s->count / 4);
 }
