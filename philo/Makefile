@@ -6,34 +6,18 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/27 02:45:59 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/27 02:51:09 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 # Program Name(s)
 NAME		:= philo
 
-# Set build directories
-BUILDDIR	:= build
-
-# Compiler Settings
-CC 			:= gcc
-CFLAGS		+= -Werror -Wall -Wextra
-# CFLAGS		+= -O3
-
 # Libraries
 LIBDIR		:= lib
 LIBS		:= libvector
 
-LIBS_A		= $(addsuffix /*.a, $(addprefix $(LIBDIR)/, $(LIBS)))
-LIBS_INC	= $(addsuffix /include, $(addprefix $(LIBDIR)/, $(LIBS)))
-
-# Headers
-INC 		= -I include -I$(LIBS_INC)
-
-
 # Sources
-SRCDIR		= 	src
 FILES		= 	input.c			\
 				main.c			\
 				msg.c			\
@@ -45,8 +29,25 @@ FILES		= 	input.c			\
 				tools/time.c	\
 				tools/value.c	\
 				tools/string.c
-	
-SOURCES		=	${addprefix $(SRCDIR)/, $(FILES)}
+
+# Set directories
+BUILDDIR	:= build
+SRCDIR		:= src
+
+# Compiler Settings
+CC 			:= gcc
+CFLAGS		+= -Werror -Wall -Wextra
+CFLAGS		+= -O3
+
+# Sources
+SOURCES		= ${addprefix $(SRCDIR)/, $(FILES)}
+
+# Dynamic files
+LIBS_A		= $(addsuffix /*.a, $(addprefix $(LIBDIR)/, $(LIBS)))
+LIBS_INC	= $(addsuffix /include, $(addprefix $(LIBDIR)/, $(LIBS)))
+
+# Headers
+INC 		= -I include -I$(LIBS_INC)
 
 # Objects
 OBJECTS		= $(SOURCES:%.c=$(BUILDDIR)/%.o)
@@ -63,7 +64,7 @@ ifneq (,$(findstring xterm,${TERM}))
 	WHITE		:= $(shell tput -Txterm setaf 7)
 	RESET		:= $(shell tput -Txterm sgr0)
 endif
-	RETURN		:= "\033[0K\n"
+
 P				:= printf "%-25.25s%s\n"
 P_OK			= $(P) "$@${GREEN}" "Norm OK" "${RESET}"
 P_KO			= $(P) "$@${RED}" "Norm KO" "${RESET}"
@@ -83,7 +84,7 @@ $(BUILDDIR)/%.o:%.c
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 	@norminette -R CheckForbiddenSourceHeader $< > /dev/null 				\
-		&& $(P) "Build${GREEN}" "$(notdir $<)${RESET}" 						\
+		&& $(P) "Build${GREEN}" "$(notdir $<)${RESET} " 						\
 		|| $(P) "Build${RED}" "$(notdir $<)${RESET}"
 
 $(LIBS):
