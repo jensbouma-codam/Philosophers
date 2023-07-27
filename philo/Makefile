@@ -6,15 +6,15 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/27 02:44:46 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/27 02:45:59 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 # Program Name(s)
-NAME		=	philo
+NAME		:= philo
 
 # Set build directories
-BUILDDIR	= build
+BUILDDIR	:= build
 
 # Compiler Settings
 CC 			:= gcc
@@ -22,8 +22,8 @@ CFLAGS		+= -Werror -Wall -Wextra
 # CFLAGS		+= -O3
 
 # Libraries
-LIBDIR		= lib
-LIBS		= libvector
+LIBDIR		:= lib
+LIBS		:= libvector
 
 LIBS_A		= $(addsuffix /*.a, $(addprefix $(LIBDIR)/, $(LIBS)))
 LIBS_INC	= $(addsuffix /include, $(addprefix $(LIBDIR)/, $(LIBS)))
