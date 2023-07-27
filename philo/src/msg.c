@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/26 15:54:14 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/27 01:58:26 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,15 @@ int	msg_print(t_sim *sim)
 
 	i = 0;
 	pthread_mutex_lock(&sim->msg_mutex);
+	if (sim->msg.size(&sim->msg) == 0)
+		return (pthread_mutex_unlock(&sim->msg_mutex), FAILURE);
 	while (i < sim->msg.size(&sim->msg))
 	{
-		msg = (t_msg *)sim->msg.get(&sim->msg, i);
+		msg = (t_msg *)sim->msg.get(&sim->msg, i++);
 		printmsg(msg);
-		sim->msg.del(&sim->msg, i);
 	}
+	while (i--)
+		sim->msg.del(&sim->msg, i);
 	pthread_mutex_unlock(&sim->msg_mutex);
 	return (SUCCESS);
 }
@@ -59,21 +62,18 @@ int	msg_add(t_sim *sim, int id, char *msg, bool last)
 	t_msg		*new;
 	static bool	lock = false;
 
-	pthread_mutex_lock(&sim->msg_mutex);
-	if (lock && id != -1)
-		return (pthread_mutex_unlock(&sim->msg_mutex), SUCCESS);
 	new = ft_calloc(1, sizeof(t_msg));
 	if (!new)
-	{
-		pthread_mutex_unlock(&sim->msg_mutex);
 		return (errorlog("Malloc failed"), FAILURE);
-	}
-	new->timestamp = timestamp(sim);
-	new->msg = msg;
 	new->id = id;
+	new->msg = msg;
+	pthread_mutex_lock(&sim->msg_mutex);
+	if (lock && id != -1)
+		return (free(new), pthread_mutex_unlock(&sim->msg_mutex), SUCCESS);
 	if (last)
 		lock = true;
-	if (sim->msg.add(&sim->msg, (void *)new) == FAILURE)
+	new->timestamp = timestamp(sim);
+	if (sim->msg.add(&sim->msg, new) == FAILURE)
 		return (free(new), pthread_mutex_unlock(&sim->msg_mutex), FAILURE);
 	pthread_mutex_unlock(&sim->msg_mutex);
 	return (SUCCESS);
