@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/25 21:23:07 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/27 02:44:46 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,6 @@ NAME		=	philo
 
 # Set build directories
 BUILDDIR	= build
-TARGET		= $<
 
 # Compiler Settings
 CC 			:= gcc
@@ -71,12 +70,14 @@ P_KO			= $(P) "$@${RED}" "Norm KO" "${RESET}"
 
 # Rules
 all: $(NAME)
-	@if [ ! -d $(dir $(TARGET)) ]; then mkdir $(dir $(TARGET)); fi
-	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBS_A) $(GLFW) -o $(TARGET)	\
-		&& ($(P) "Executable $(GREEN)" "$< Created $(RESET)" && exit 0)						\
-		|| ($(P) "Executable $(RED)" "$< Compile error $(RESET)" && exit 1)
+	@make norm 2> /dev/null && printf "\n🙏 $(GREEN)All Done $(RESET)\n" || printf "\n$(RED)Norminette KO$(RESET)"
+
+$(NAME): $(OBJECTS)
+	@make $(LIBS)
+	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBS_A) $(GLFW) -o $(NAME)	\
+		&& ($(P) "Executable $(GREEN)" "$@ $(RESET)" && exit 0)			\
+		|| ($(P) "Executable $(RED)" "$@ Compile error $(RESET)" && exit 1)
 	@$(P) "Flags $(YELLOW)" "$(CFLAGS) $(RESET)"
-	@make norm 2> /dev/null && ($(P) "Norminette$(GREEN)" "OK$(RESET)" && printf "\n🙏 $(GREEN)Complete $(RESET)\n") || $(P) "Norminette$(RED)" "KO$(RESET)"
 
 $(BUILDDIR)/%.o:%.c
 	@mkdir -p $(dir $@)
@@ -87,15 +88,12 @@ $(BUILDDIR)/%.o:%.c
 
 $(LIBS):
 	@mkdir -p $(BUILDDIR)
-	@git submodule update --init 2>&1 				\
+	@git submodule update --init 2>&1 > /dev/null	\
 		&& $(P) "Submodule${GREEN}" "$@$(RESET)"	\
 		|| $(P) "Submodule${RED}" "$@$(RESET)"
 	@make -C $(LIBDIR)/$@ 2>&1	> /dev/null			\
 		&& $(P) "Build${GREEN}" "$@$(RESET)"		\
 		|| $(P) "Build${RED}" "$@$(RESET)"	
-
-$(NAME): $(LIBS) $(OBJECTS)
-	@make norm 2> /dev/null && $(P_OK) || { $(P_KO);}
 
 clean:
 	@rm -rf $(BUILDDIR)
@@ -123,10 +121,6 @@ thread: re all
 	@printf "$(RED)Compiled in debug / thread mode!!!$(RESET)\n\n"
 
 norm: $(SOURCES)
-ifneq ($(UNAME_S),Linux)
 	@norminette -R CheckForbiddenSourceHeader $^ include 2>&1 > /dev/null && exit 0 || exit 1
-else
-	@echo "Norminette not available on this machine" && exit 0
-endif
 
 .PHONY: CFLAGS all clean fclean re
