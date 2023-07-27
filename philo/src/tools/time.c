@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 19:30:26 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/26 19:16:49 by jbouma        ########   odam.nl         */
+/*   Updated: 2023/07/27 01:43:21 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,13 @@ long	timestamp(t_sim *s)
 {
 	static long		start = 0;
 	struct timeval	time;
-	long			timestamp;
 
-	pthread_mutex_lock(&s->start_time_mutex);
 	gettimeofday(&time, NULL);
+	pthread_mutex_lock(&s->time_mutex);
 	if (start == 0)
 		start = (time.tv_sec * 1000 + time.tv_usec / 1000);
-	timestamp = (time.tv_sec * 1000 + time.tv_usec / 1000) - start;
-	pthread_mutex_unlock(&s->start_time_mutex);
-	return (timestamp);
+	pthread_mutex_unlock(&s->time_mutex);
+	return ((time.tv_sec * 1000 + time.tv_usec / 1000) - start);
 }
 
 void	spend_time(t_sim *s, long time)
@@ -32,5 +30,5 @@ void	spend_time(t_sim *s, long time)
 	const long	start = timestamp(s);
 
 	while (timestamp(s) < (start + time))
-		usleep(500);
+		usleep(400);
 }
