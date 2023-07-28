@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 16:37:16 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:52:48 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	main(int argc, char **argv)
 	if (DEBUG == 2)
 		atexit(print_mem);
 	exitcode = EXIT_FAILURE;
-	s = input(argc, argv, 0);
+	s = input(argc, argv);
 	if (!s)
 		return (EXIT_FAILURE);
 	if (pthread_mutex_init(&s->msg_mutex, NULL) != 0

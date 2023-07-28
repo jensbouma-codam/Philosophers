@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/14 18:50:24 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 11:04:30 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 17:05:13 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	ft_strtoi(const char *str)
 	return (nbr);
 }
 
-static t_sim	*input_argumenst(int argc, char **argv, int i)
+static t_sim	*input_argumenst(int argc, char **argv)
 {
 	t_sim	*sim;
 	int		n;
@@ -53,32 +53,32 @@ static t_sim	*input_argumenst(int argc, char **argv, int i)
 	if (!sim)
 		return (errorlog("Malloc failed"), NULL);
 	sim->times_to_eat = -1;
-	while (++i < argc)
+	while (argc-- > 1)
 	{
-		n = ft_strtoi(argv[i]);
+		n = ft_strtoi(argv[argc]);
 		if (n < 0)
 			return (free(sim), NULL);
-		if (i == 1)
+		if (argc == 1)
 			sim->count = n;
-		else if (i == 2)
+		else if (argc == 2)
 			sim->time_to_die = n;
-		else if (i == 3)
+		else if (argc == 3)
 			sim->time_to_eat = n;
-		else if (i == 4)
+		else if (argc == 4)
 			sim->time_to_sleep = n;
-		else if (i == 5)
+		else if (argc == 5)
 			sim->times_to_eat = n;
 	}
 	return (sim);
 }
 
-t_sim	*input(int argc, char **argv, int i)
+t_sim	*input(int argc, char **argv)
 {
 	t_sim	*sim;
 
 	if (argc < 5 || argc > 6)
 		return (errorlog("Wrong number of arguments"), NULL);
-	sim = input_argumenst(argc, argv, i);
+	sim = input_argumenst(argc, argv);
 	if (!sim)
 		return (NULL);
 	if (sim->count > PROCESS_LIMIT)

@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 14:31:41 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:53:00 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ typedef struct s_philo
 
 }	t_philo;
 
-t_sim	*input(int argc, char **argv, int i);
+t_sim	*input(int argc, char **argv);
 
 int		fork_create(t_sim *s);
 int		fork_free(void *ptr);
