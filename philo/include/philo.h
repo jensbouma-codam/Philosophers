@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/27 01:47:45 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 10:46:23 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ typedef struct s_msg
 
 typedef struct s_value
 {
-	int					value;
+	long				value;
 
 	pthread_mutex_t		mutex;
 
-	int					(*get)(struct s_value *);
-	int					(*set)(struct s_value *, int);
+	long				(*get)(struct s_value *);
+	long				(*set)(struct s_value *, long);
 	int					(*free)(struct s_value *);
 }	t_value;
 
@@ -73,7 +73,7 @@ typedef struct s_sim
 	int					time_to_die;
 	int					time_to_eat;
 	int					time_to_sleep;
-	long				times_to_eat;
+	int					times_to_eat;
 }	t_sim;
 
 typedef struct s_philo
@@ -85,8 +85,9 @@ typedef struct s_philo
 	t_value				running;
 	t_value				x_eaten;
 
-	long				time_to_die;
-	pthread_mutex_t		time_to_die_mutex;
+	t_value				time_to_die_2;
+	// long				time_to_die;
+	// pthread_mutex_t		time_to_die_mutex;
 }	t_philo;
 
 t_sim	*input(int argc, char **argv, int i);

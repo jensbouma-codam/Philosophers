@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/27 01:53:55 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 10:51:03 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ int	philo_free(void *ptr)
 	p = (t_philo *)ptr;
 	if (pthread_detach(p->thread) != 0)
 		errorlog("Failed to detach thread");
-	if (pthread_mutex_destroy(&p->time_to_die_mutex) != 0)
-		errorlog("Failed to destroy n_to_die_mutex mutex");
+	p->time_to_die_2.free(&p->time_to_die_2);
 	free(p);
 	return (SUCCESS);
 }
@@ -31,9 +30,7 @@ void	philo_eat(t_philo *p, t_sim *s, t_fork *fork_l, t_fork *fork_r)
 	msg_add(s, p->id, "has taken a fork", false);
 	pthread_mutex_lock(&fork_r->in_use_mutex);
 	msg_add(s, p->id, "has taken a fork", false);
-	pthread_mutex_lock(&p->time_to_die_mutex);
-	p->time_to_die = timestamp(s) + s->time_to_die;
-	pthread_mutex_unlock(&p->time_to_die_mutex);
+	p->time_to_die_2.set(&p->time_to_die_2, timestamp(s) + s->time_to_die);
 	msg_add(s, p->id, "is eating", false);
 	spend_time(s, s->time_to_eat);
 	p->x_eaten.set(&p->x_eaten, p->x_eaten.get(&p->x_eaten) + 1);
@@ -94,15 +91,15 @@ int	philo_create(t_sim *s, int id)
 	p = ft_calloc(1, sizeof(t_philo));
 	if (!p)
 		return (errorlog("Malloc failed"), FAILURE);
-	if (pthread_mutex_init(&p->time_to_die_mutex, NULL) != 0)
-		return (free(p), errorlog("Failed to init mutex"), FAILURE);
 	if (s->philos.add(&s->philos, (void *)p) == FAILURE)
 		return (free(p), errorlog("Malloc failed"), FAILURE);
 	p->id = id;
-	p->time_to_die = s->time_to_die;
-	p->sim = s;
-	if (!value_init(&p->x_eaten) || !value_init(&p->running))
+	if (!value_init(&p->x_eaten)
+		|| !value_init(&p->running)
+		|| !value_init(&p->time_to_die_2))
 		return (errorlog("Failed to init value"), FAILURE);
+	p->time_to_die_2.set(&p->time_to_die_2, timestamp(s) + s->time_to_die);
+	p->sim = s;
 	if (pthread_create(&p->thread, NULL, philo_proc, p) != 0)
 		return (errorlog("Failed to create thread"), FAILURE);
 	return (SUCCESS);

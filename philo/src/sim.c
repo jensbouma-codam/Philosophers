@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/27 02:14:44 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 10:54:15 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,12 @@ bool	someone_died(t_sim *s)
 	while (id < s->count)
 	{
 		philo = (t_philo *)s->philos.get(&s->philos, id);
-		pthread_mutex_lock(&philo->time_to_die_mutex);
-		if (philo->time_to_die < timestamp(s)
+		if (philo->time_to_die_2.get(&philo->time_to_die_2) < timestamp(s)
 			&& philo->running.get(&philo->running))
 		{
 			msg_add(s, id, "died", true);
-			pthread_mutex_unlock(&philo->time_to_die_mutex);
 			return (true);
 		}
-		pthread_mutex_unlock(&philo->time_to_die_mutex);
 		id++;
 	}
 	return (false);
