@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 10:56:30 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 11:04:33 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,14 @@
 #  define DEBUG 0
 # endif
 
-# define ALLOW_ZERO 0
 # define PROCESS_LIMIT 2047
 
 # include "../lib/libvector/include/vector.h"
 
 # include <stdbool.h>
-# include <stddef.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdarg.h>
 # include <limits.h>
-# include <string.h>
 # include <stdio.h>
 # include <pthread.h>
 # include <sys/time.h>
