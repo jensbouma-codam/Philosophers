@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 11:04:33 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 14:31:41 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,21 @@ typedef struct s_fork
 	pthread_mutex_t		in_use_mutex;
 }	t_fork;
 
+enum e_philo_state
+{
+	FAIL,
+	CREATE,
+	RUNNING,
+	STOPED
+};
+
 typedef struct s_philo
 {
 	int					id;
 	pthread_t			thread;
 	t_sim				*sim;
 
-	t_value				running;
+	t_value				run;
 	t_value				eaten;
 	t_value				dead_time;
 
@@ -103,6 +111,7 @@ int		msg_print(t_sim *sim);
 int		msg_free(void *ptr);
 
 int		value_init(t_value *v);
+int		value_free(t_value *v);
 
 long	timestamp(t_sim *sim);
 void	spend_time(t_sim *sim, long time);

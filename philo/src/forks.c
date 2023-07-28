@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:02:16 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/27 02:40:44 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 14:57:11 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	fork_create(t_sim *s)
 		if (pthread_mutex_init(&fork->in_use_mutex, NULL) != 0)
 			return (free(fork), errorlog("Failed to init mutex"), FAILURE);
 		if (!s->forks.add(&s->forks, fork))
-			return (errorlog("Failed to add fork"), FAILURE);
+			return (free(fork), errorlog("Failed to add fork"), FAILURE);
 		id++;
 	}
 	return (SUCCESS);
