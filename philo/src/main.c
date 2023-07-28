@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 15:21:15 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:17:18 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ int	main(int argc, char **argv)
 		errorlog("Failed to init program");
 	else
 		exit = simulation(s);
-	v_free(&s->philos);
 	v_free(&s->forks);
 	v_free(&s->msg);
+	v_free(&s->philos);
 	pthread_mutex_destroy(&s->time_mutex);
 	pthread_mutex_destroy(&s->msg_mutex);
 	free(s);

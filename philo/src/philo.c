@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 15:24:45 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:24:44 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,19 +102,18 @@ int	philo_create(t_sim *s, int id)
 		p->sim = s;
 		if (value_init(&p->run)
 			&& value_init(&p->eaten)
-			&& value_init(&p->dead_time)
-			&& s->philos.add(&s->philos, (void *)p))
+			&& value_init(&p->dead_time))
 		{
 			p->dead_time.set(&p->dead_time, s->time_to_die);
 			p->run.set(&p->run, CREATE);
-			if (pthread_create(&p->thread, NULL, philo_proc, p) != 0)
-				return (errorlog("Failed to create thread"), FAILURE);
-			return (SUCCESS);
+			if (s->philos.add(&s->philos, (void *)p))
+				if (pthread_create(&p->thread, NULL, philo_proc, p) == 0)
+					return (SUCCESS);
 		}
-		free(p);
 	}
 	value_free(&p->run);
 	value_free(&p->eaten);
 	value_free(&p->dead_time);
+	free(p);
 	return (errorlog("Failed to create philo"), FAILURE);
 }
