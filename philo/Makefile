@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/27 02:53:29 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/28 11:32:56 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,7 +69,8 @@ P_KO			= $(P) "$@${RED}" "Norm KO" "${RESET}"
 
 # Rules
 all: $(NAME)
-	@make norm 2> /dev/null && printf "\n🙏 $(GREEN)All Done $(RESET)\n" || printf "\n$(RED)Norminette KO$(RESET)"
+	@printf "\n🙏 $(PURPLE)All Done $(RESET)\n"
+	
 
 $(NAME): $(OBJECTS)
 	@make $(LIBS)
@@ -88,9 +89,9 @@ $(BUILDDIR)/%.o:%.c
 $(LIBS):
 	@mkdir -p $(BUILDDIR)
 	@git submodule update --init 2>&1 > /dev/null	\
-		&& $(P) "Submodule${GREEN}" "$@$(RESET)"	\
-		|| $(P) "Submodule${RED}" "$@$(RESET)"
-	@make -C $(LIBDIR)/$@ 2>&1	> /dev/null			\
+		&& $(P) "Git${GREEN}" "$@$(RESET)"	\
+		|| $(P) "Git${RED}" "$@$(RESET)"
+	@make -C $(LIBDIR)/$@ > /dev/null			\
 		&& $(P) "Build${GREEN}" "$@$(RESET)"		\
 		|| $(P) "Build${RED}" "$@$(RESET)"	
 
