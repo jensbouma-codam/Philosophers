@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:02:16 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 14:57:11 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:40:53 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,11 @@ int	fork_create(t_sim *s)
 	{
 		fork = ft_calloc(1, sizeof(t_fork));
 		if (!fork)
-			return (errorlog("Malloc failed"), FAILURE);
+			return (FAILURE);
 		fork->id = id;
-		if (pthread_mutex_init(&fork->in_use_mutex, NULL) != 0)
-			return (free(fork), errorlog("Failed to init mutex"), FAILURE);
-		if (!s->forks.add(&s->forks, fork))
-			return (free(fork), errorlog("Failed to add fork"), FAILURE);
+		if (pthread_mutex_init(&fork->in_use_mutex, NULL) == 0)
+			if (!s->forks.add(&s->forks, fork))
+				return (free(fork), FAILURE);
 		id++;
 	}
 	return (SUCCESS);

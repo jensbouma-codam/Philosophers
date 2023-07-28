@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 15:04:39 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:27:55 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	msg_add(t_sim *sim, int id, char *msg, bool last)
 	pthread_mutex_lock(&sim->msg_mutex);
 	new = ft_calloc(1, sizeof(t_msg));
 	if (!new)
-		return (errorlog("Malloc failed"), FAILURE);
+		return (errorlog("Failed to add message"), FAILURE);
 	new->id = id;
 	new->msg = msg;
 	if (lock && id != -1)

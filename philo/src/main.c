@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:32 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 16:17:18 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 16:37:16 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ static void	print_mem(void)
 int	main(int argc, char **argv)
 {
 	t_sim	*s;
-	int		exit;
+	int		exitcode;
 
 	if (DEBUG == 2)
 		atexit(print_mem);
-	exit = EXIT_FAILURE;
+	exitcode = EXIT_FAILURE;
 	s = input(argc, argv, 0);
 	if (!s)
 		return (EXIT_FAILURE);
@@ -37,12 +37,12 @@ int	main(int argc, char **argv)
 		|| !fork_create(s))
 		errorlog("Failed to init program");
 	else
-		exit = simulation(s);
+		exitcode = simulation(s);
+	v_free(&s->philos);
 	v_free(&s->forks);
 	v_free(&s->msg);
-	v_free(&s->philos);
 	pthread_mutex_destroy(&s->time_mutex);
 	pthread_mutex_destroy(&s->msg_mutex);
 	free(s);
-	return (exit);
+	return (exitcode);
 }
