@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 11:41:06 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 15:24:45 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,16 @@ int	philo_free(void *ptr)
 	t_philo	*p;
 
 	p = (t_philo *)ptr;
-	if (pthread_detach(p->thread) != 0)
-		errorlog("Failed to detach thread");
-	p->dead_time.free(&p->dead_time);
+	while (p->run.get(&p->run) == RUNNING || p->run.get(&p->run) == CREATE)
+	{
+		if (p->run.get(&p->run) == FAIL)
+			break ;
+		usleep(100);
+	}
+	pthread_detach(p->thread);
+	value_free(&p->dead_time);
+	value_free(&p->eaten);
+	value_free(&p->run);
 	free(p);
 	return (SUCCESS);
 }
@@ -69,7 +76,7 @@ void	*philo_proc(void *ptr)
 	else
 		fork_r = (t_fork *)s->forks.get(&s->forks, (p->id + 1));
 	fork_l = (t_fork *)s->forks.get(&s->forks, p->id);
-	p->running.set(&p->running, true);
+	p->run.set(&p->run, RUNNING);
 	wait_for_start(s, p);
 	while (!s->end_sim.get(&s->end_sim))
 	{
@@ -80,7 +87,7 @@ void	*philo_proc(void *ptr)
 		spend_time(s, s->time_to_sleep);
 		msg_add(s, p->id, "is thinking", false);
 	}
-	p->running.set(&p->running, false);
+	p->run.set(&p->run, STOPED);
 	return (NULL);
 }
 
@@ -89,18 +96,25 @@ int	philo_create(t_sim *s, int id)
 	t_philo		*p;
 
 	p = ft_calloc(1, sizeof(t_philo));
-	if (!p)
-		return (errorlog("Malloc failed"), FAILURE);
-	if (s->philos.add(&s->philos, (void *)p) == FAILURE)
-		return (free(p), errorlog("Malloc failed"), FAILURE);
-	p->id = id;
-	if (!value_init(&p->eaten)
-		|| !value_init(&p->running)
-		|| !value_init(&p->dead_time))
-		return (errorlog("Failed to init value"), FAILURE);
-	p->dead_time.set(&p->dead_time, timestamp(s) + s->time_to_die);
-	p->sim = s;
-	if (pthread_create(&p->thread, NULL, philo_proc, p) != 0)
-		return (errorlog("Failed to create thread"), FAILURE);
-	return (SUCCESS);
+	if (p)
+	{
+		p->id = id;
+		p->sim = s;
+		if (value_init(&p->run)
+			&& value_init(&p->eaten)
+			&& value_init(&p->dead_time)
+			&& s->philos.add(&s->philos, (void *)p))
+		{
+			p->dead_time.set(&p->dead_time, s->time_to_die);
+			p->run.set(&p->run, CREATE);
+			if (pthread_create(&p->thread, NULL, philo_proc, p) != 0)
+				return (errorlog("Failed to create thread"), FAILURE);
+			return (SUCCESS);
+		}
+		free(p);
+	}
+	value_free(&p->run);
+	value_free(&p->eaten);
+	value_free(&p->dead_time);
+	return (errorlog("Failed to create philo"), FAILURE);
 }

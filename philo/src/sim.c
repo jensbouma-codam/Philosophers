@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 11:19:17 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 15:19:55 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	someone_died(t_sim *s)
 	{
 		philo = (t_philo *)s->philos.get(&s->philos, id);
 		if (philo->dead_time.get(&philo->dead_time) < timestamp(s)
-			&& philo->running.get(&philo->running))
+			&& philo->run.get(&philo->run))
 		{
 			msg_add(s, id, "died", true);
 			return (true);
@@ -52,71 +52,49 @@ bool	someone_died(t_sim *s)
 	return (false);
 }
 
-int	processcount(t_sim *s)
-{
-	int		id;
-	int		count;
-
-	id = 0;
-	count = 0;
-	while (id < s->count)
-	{
-		if (((t_philo *)s->philos.get(&s->philos, id))->running
-			.get(&((t_philo *)s->philos.get(&s->philos, id))->running))
-			count++;
-		id++;
-	}
-	return (count);
-}
-
 void	simulation_run(t_sim *s)
 {
-	int	count;
+	int	wait;
 
-	count = 0;
+	wait = 0;
 	timestamp(s);
+	msg_print(s);
 	s->start_lock.set(&s->start_lock, false);
 	while (true)
 	{
 		if (someone_died(s) || everbody_has_eaten(s))
 			break ;
-		else if (count++ == 100)
+		else if (wait++ >= 1)
 		{
 			msg_print(s);
-			count = 0;
+			wait = 0;
 		}
 		else
-			usleep(100);
+			usleep(1000);
 	}
 	s->end_sim.set(&s->end_sim, true);
 	msg_print(s);
-	while (processcount(s) > 0)
-		usleep(1000);
 }
 
 int	simulation(t_sim *s)
 {
 	int				id;
-	t_philo			*p;
 
 	id = 0;
-	if (!v_init(&s->forks, sizeof(t_fork), fork_free, NULL)
-		|| !value_init(&s->start_lock))
-		return (errorlog("Malloc failed"), FAILURE);
-	s->start_lock.set(&s->start_lock, true);
-	if (!fork_create(s))
-		return (v_free(&s->forks), FAILURE);
-	while (id < s->count)
-		if (!philo_create(s, id++))
-			return (v_free(&s->forks), FAILURE);
-	simulation_run(s);
-	while (id--)
+	if (!value_init(&s->start_lock) || !value_init(&s->end_sim))
+		return (errorlog("Simulation init failed"), FAILURE);
+	else
 	{
-		p = (t_philo *)s->philos.get(&s->philos, id);
-		p->running.free(&p->running);
-		p->eaten.free(&p->eaten);
+		s->start_lock.set(&s->start_lock, true);
+		while (id < s->count)
+		{
+			if (!philo_create(s, id++))
+			{
+				s->end_sim.set(&s->end_sim, true);
+				return (FAILURE);
+			}
+		}
 	}
-	s->end_sim.free(&s->end_sim);
-	v_free(&s->forks);
+	simulation_run(s);
 	return (SUCCESS);
 }

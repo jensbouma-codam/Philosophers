@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:26:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 10:39:54 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 14:37:25 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ static long	value_set(t_value *v, long value)
 	return (value);
 }
 
-static int	value_free(t_value *v)
+int	value_free(t_value *v)
 {
-	if (pthread_mutex_destroy(&v->mutex) != 0)
-		return (errorlog("Failed to destroy mutex"), -1);
+	if (v)
+		pthread_mutex_destroy(&v->mutex);
 	return (SUCCESS);
 }
 
@@ -44,6 +44,9 @@ int	value_init(t_value *v)
 	v->get = value_get;
 	v->free = value_free;
 	if (pthread_mutex_init(&v->mutex, NULL) != 0)
-		return (errorlog("Failed to init mutex"), FAILURE);
+	{
+		errorlog("Failed to init value");
+		return (FAILURE);
+	}
 	return (SUCCESS);
 }
