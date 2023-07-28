@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/25 18:04:15 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 10:54:15 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 10:56:30 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	everbody_has_eaten(t_sim *s)
 	while (id < s->count)
 	{
 		philo = (t_philo *)s->philos.get(&s->philos, id);
-		if (philo->x_eaten.get(&philo->x_eaten) < s->times_to_eat)
+		if (philo->eaten.get(&philo->eaten) < s->times_to_eat)
 			return (false);
 		id++;
 	}
@@ -41,7 +41,7 @@ bool	someone_died(t_sim *s)
 	while (id < s->count)
 	{
 		philo = (t_philo *)s->philos.get(&s->philos, id);
-		if (philo->time_to_die_2.get(&philo->time_to_die_2) < timestamp(s)
+		if (philo->dead_time.get(&philo->dead_time) < timestamp(s)
 			&& philo->running.get(&philo->running))
 		{
 			msg_add(s, id, "died", true);
@@ -114,7 +114,7 @@ int	simulation(t_sim *s)
 	{
 		p = (t_philo *)s->philos.get(&s->philos, id);
 		p->running.free(&p->running);
-		p->x_eaten.free(&p->x_eaten);
+		p->eaten.free(&p->eaten);
 	}
 	s->end_sim.free(&s->end_sim);
 	v_free(&s->forks);

@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 10:46:23 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 10:56:30 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,6 @@ typedef struct s_value
 	int					(*free)(struct s_value *);
 }	t_value;
 
-typedef struct s_fork
-{
-	int					id;
-	pthread_mutex_t		in_use_mutex;
-}	t_fork;
-
 typedef struct s_sim
 {
 	t_v					philos;
@@ -76,6 +70,12 @@ typedef struct s_sim
 	int					times_to_eat;
 }	t_sim;
 
+typedef struct s_fork
+{
+	int					id;
+	pthread_mutex_t		in_use_mutex;
+}	t_fork;
+
 typedef struct s_philo
 {
 	int					id;
@@ -83,11 +83,9 @@ typedef struct s_philo
 	t_sim				*sim;
 
 	t_value				running;
-	t_value				x_eaten;
+	t_value				eaten;
+	t_value				dead_time;
 
-	t_value				time_to_die_2;
-	// long				time_to_die;
-	// pthread_mutex_t		time_to_die_mutex;
 }	t_philo;
 
 t_sim	*input(int argc, char **argv, int i);

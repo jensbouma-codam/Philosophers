@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 10:51:03 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/28 10:56:30 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	philo_free(void *ptr)
 	p = (t_philo *)ptr;
 	if (pthread_detach(p->thread) != 0)
 		errorlog("Failed to detach thread");
-	p->time_to_die_2.free(&p->time_to_die_2);
+	p->dead_time.free(&p->dead_time);
 	free(p);
 	return (SUCCESS);
 }
@@ -30,10 +30,10 @@ void	philo_eat(t_philo *p, t_sim *s, t_fork *fork_l, t_fork *fork_r)
 	msg_add(s, p->id, "has taken a fork", false);
 	pthread_mutex_lock(&fork_r->in_use_mutex);
 	msg_add(s, p->id, "has taken a fork", false);
-	p->time_to_die_2.set(&p->time_to_die_2, timestamp(s) + s->time_to_die);
+	p->dead_time.set(&p->dead_time, timestamp(s) + s->time_to_die);
 	msg_add(s, p->id, "is eating", false);
 	spend_time(s, s->time_to_eat);
-	p->x_eaten.set(&p->x_eaten, p->x_eaten.get(&p->x_eaten) + 1);
+	p->eaten.set(&p->eaten, p->eaten.get(&p->eaten) + 1);
 	pthread_mutex_unlock(&fork_r->in_use_mutex);
 	pthread_mutex_unlock(&fork_l->in_use_mutex);
 }
@@ -94,11 +94,11 @@ int	philo_create(t_sim *s, int id)
 	if (s->philos.add(&s->philos, (void *)p) == FAILURE)
 		return (free(p), errorlog("Malloc failed"), FAILURE);
 	p->id = id;
-	if (!value_init(&p->x_eaten)
+	if (!value_init(&p->eaten)
 		|| !value_init(&p->running)
-		|| !value_init(&p->time_to_die_2))
+		|| !value_init(&p->dead_time))
 		return (errorlog("Failed to init value"), FAILURE);
-	p->time_to_die_2.set(&p->time_to_die_2, timestamp(s) + s->time_to_die);
+	p->dead_time.set(&p->dead_time, timestamp(s) + s->time_to_die);
 	p->sim = s;
 	if (pthread_create(&p->thread, NULL, philo_proc, p) != 0)
 		return (errorlog("Failed to create thread"), FAILURE);
