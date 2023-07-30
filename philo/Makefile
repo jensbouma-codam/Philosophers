@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/28 17:58:37 by jensbouma     ########   odam.nl          #
+#    Updated: 2023/07/30 15:38:52 by jbouma        ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,8 +72,7 @@ all: $(NAME)
 	@printf "\n🙏 $(PURPLE)All Done $(RESET)\n"
 	
 
-$(NAME): $(OBJECTS)
-	@make $(LIBS)
+$(NAME): $(OBJECTS) $(LIBS_A)
 	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBS_A) -o $(NAME)		\
 		&& ($(P) "Executable $(GREEN)" "$@ $(RESET)" && exit 0)				\
 		|| ($(P) "Executable $(RED)" "$@ Compile error $(RESET)" && exit 1)
@@ -85,6 +84,9 @@ $(BUILDDIR)/%.o:%.c
 	@norminette -R CheckForbiddenSourceHeader $< > /dev/null 				\
 		&& $(P) "Build${GREEN}" "$(notdir $<)${RESET} " 					\
 		|| $(P) "Build${RED}" "$(notdir $<)${RESET}"
+
+$(LIBS_A):
+	@make $(LIBS)
 
 $(LIBS):
 	@mkdir -p $(BUILDDIR)
