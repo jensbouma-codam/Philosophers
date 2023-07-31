@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/31 12:04:27 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/31 12:19:40 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ enum e_philo_state
 	FAIL,
 	CREATE,
 	RUNNING,
-	STOPED
+	STOPPED
 };
 
 typedef struct s_philo

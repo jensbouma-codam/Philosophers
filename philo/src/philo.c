@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 23:34:38 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/31 11:58:36 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/31 12:05:24 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	philo_free(void *ptr)
 	p = (t_philo *)ptr;
 	while ((p->run.get(&p->run) == RUNNING
 			|| p->run.get(&p->run) == CREATE)
-		&& p->run.get(&p->run) != STOPED)
+		&& p->run.get(&p->run) != STOPPED)
 	{
 		if (p->run.get(&p->run) == FAIL)
 			break ;
@@ -89,7 +89,7 @@ void	*philo_proc(void *ptr)
 		spend_time(s, s->time_to_sleep);
 		msg_add(s, p->id, "is thinking", false);
 	}
-	p->run.set(&p->run, STOPED);
+	p->run.set(&p->run, STOPPED);
 	return (NULL);
 }
 
