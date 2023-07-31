@@ -6,7 +6,7 @@
 /*   By: jensbouma <jensbouma@student.codam.nl>       +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/20 22:35:49 by jensbouma     #+#    #+#                 */
-/*   Updated: 2023/07/28 17:49:56 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/31 12:00:57 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	printmsg(struct s_msg *msg)
 	write(1, " ", 1);
 	if (msg->id != -1)
 	{
-		ft_putint(msg->id);
+		ft_putint(msg->id + 1);
 		write(1, " ", 1);
 	}
 	write(1, msg->msg, ft_strlen(msg->msg));

@@ -6,7 +6,7 @@
 #    By: jbouma <jbouma@student.codam.nl>             +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/10/10 14:09:40 by jbouma        #+#    #+#                  #
-#    Updated: 2023/07/30 15:38:52 by jbouma        ########   odam.nl          #
+#    Updated: 2023/07/30 16:19:33 by jensbouma     ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,7 +72,7 @@ all: $(NAME)
 	@printf "\n🙏 $(PURPLE)All Done $(RESET)\n"
 	
 
-$(NAME): $(OBJECTS) $(LIBS_A)
+$(NAME): $(LIBS_A) $(OBJECTS)
 	@$(CC) $(CFLAGS) $(INC) $(HEADERS) $(OBJECTS) $(LIBS_A) -o $(NAME)		\
 		&& ($(P) "Executable $(GREEN)" "$@ $(RESET)" && exit 0)				\
 		|| ($(P) "Executable $(RED)" "$@ Compile error $(RESET)" && exit 1)

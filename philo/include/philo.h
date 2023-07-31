@@ -6,7 +6,7 @@
 /*   By: jbouma <jbouma@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/12 15:23:57 by jbouma        #+#    #+#                 */
-/*   Updated: 2023/07/28 16:53:00 by jensbouma     ########   odam.nl         */
+/*   Updated: 2023/07/31 12:04:27 by jensbouma     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #  define DEBUG 0
 # endif
 
-# define PROCESS_LIMIT 2047
+# define PROCESS_LIMIT 4095
 
 # include "../lib/libvector/include/vector.h"
 
